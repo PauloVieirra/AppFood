@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [alertcadastro, setAlertCadastro] = useState(false);
-  console.log(alertcadastro);
+  
 
 
   useEffect(() => {
@@ -145,6 +145,7 @@ export const AuthProvider = ({ children }) => {
           telefone: telefone,
           cidade: endereco.cidade,
           nome: nome,
+          urlImage: urlImage,
           isValidate: isValidate, // Defina o tipo do usuário no banco de dados
           // Adicione outros campos necessários, se houver
         });

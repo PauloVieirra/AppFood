@@ -12,16 +12,18 @@ const styles = StyleSheet.create({
     paddingHorizontal:20,
  },
  userimg:{
-    width:40,
-    height:40,
-    borderRadius:20,
-    backgroundColor:"#dedede"
+    width:46,
+    height:46,
+    borderRadius:23,
+    borderColor:'green',
+    borderWidth:2,
+    
  },
  userdata:{
     flex:2,
+    flexDirection:'row',
     height:'100%',
-    marginLeft:10,
-    backgroundColor:"#dedede"
+    justifyContent:'flex-start',
  },
  userdatasec:{
     flex:1,
@@ -29,13 +31,19 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'flex-end',
-    backgroundColor:"#dedede"
  },
  userdata_title:{
-    fontSize:18,
+    fontSize:20,
     fontWeight:'bold',
-    color:'#000'
- }
+    color:'#000',
+    marginLeft:10
+ },
+ userdata_email:{
+   fontSize:12,
+   fontWeight:'bold',
+   color:'#000',
+   marginLeft:10
+}
 });
 
 export default styles;

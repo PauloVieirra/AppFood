@@ -12,17 +12,20 @@ export default Userinfo = () => {
   return (
     <View style={styles.constainer}>
       <View style={styles.userdata}>
-        <Text style={styles.userdata_title}>Oi{' '}{user.nome}</Text>
         {user.isValidate === true ? (
-           <Text>{user.email}</Text> 
+             <Image source={{ uri: user.urlImage }}style={styles.userimg}  />
         ) : (
-            
-             <Text>Complete seu cadastro!!</Text>
+          null
         )}
+        <View>
+           <Text style={styles.userdata_title}>Oi,{' '}{user.nome}</Text>
+           <Text style={styles.userdata_email}>{' '}{user.telefone}</Text>
+        </View>
+        
        
       </View>
       <View style={styles.userdatasec}>
-        <Image style={styles.userimg} />
+      
       </View>
     </View>
   ); 

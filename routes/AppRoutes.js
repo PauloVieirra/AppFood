@@ -5,8 +5,10 @@ import Home from '../src/screens/Home/index';
 import DetalhesProduto from "../src/screens/Details";
 import Cart from "../src/screens/Cart";
 import Card from "../Components/Cards";
+import ProfileCad from "../src/screens/Complite";
 import { CartProvider } from "../context/CartContext";
 import CustomDrawerContent from "../Components/CunstonDraqer";
+
 
 
 
@@ -55,6 +57,13 @@ function StackNavigator() {
            <AppStack.Screen 
               name="Card" 
               component={Card}
+              options={{
+                  headerShown: false,
+              }}
+          />
+            <AppStack.Screen 
+              name="ProfileCad" 
+              component={ProfileCad}
               options={{
                   headerShown: false,
               }}
