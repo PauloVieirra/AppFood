@@ -13,31 +13,39 @@ import Goback from "../../../Components/Comunications/Controles";
 
 const Cart = () => {
   const { cart, removeFromCart } = useCart();
-  
+
+  // Função para agrupar os itens por UID
   const groupItemsById = (items) => {
     const groupedItems = {};
-
+  
     items.forEach((item) => {
-      // Verifica se o UID do item já existe no grupo
       if (!groupedItems[item.uid]) {
-        // Se não existir, adiciona o item ao grupo
         groupedItems[item.uid] = {
           ...item,
-          formattedPrice: item.formattedPrice, // Mantendo o totalPrice
-          quantity: item.quantity, // Mantendo a quantity
+          totalPrice: parseFloat(item.totalPrice), // Convertendo para número
+          quantity: item.quantity,
         };
       } else {
-        // Se existir, soma a quantidade e atualiza o totalPrice
         groupedItems[item.uid].quantity += item.quantity;
-        groupedItems[item.uid].formattedPrice += item.formattedPrice;
+        groupedItems[item.uid].totalPrice += parseFloat(item.totalPrice); // Convertendo para número e somando
       }
     });
-
+  
     // Converte o objeto de itens agrupados de volta em um array
     return Object.values(groupedItems);
   };
-
+  
+  
+  
+  
+  // Agrupa os itens
   const groupedCartItems = groupItemsById(cart);
+  console.log(groupedCartItems);
+  // Calcula o valor total da compra
+  const totalPrice = groupedCartItems.reduce((total, item) => total + item.totalPrice, 0);
+
+  console.log(totalPrice);
+ 
 
   return (
     <View style={styles.container}>
@@ -58,20 +66,18 @@ const Cart = () => {
         <FlatList
           data={groupedCartItems}
           renderItem={({ item }) => (
-            
             <View style={styles.card}>
               <CardCarrinho
-              descricao={item.descricao}
-              id={item.id}
-              image={item.urlImage}
-              nome={item.nome}
-              price={item.price}
-              totalprice={item.totalprice}
-              curtadescricao={item.curtadescricao}
-              uid={item.uid}
+                descricao={item.descricao}
+                id={item.id}
+                image={item.image}
+                nome={item.nome}
+                price={item.price}
+                totalprice={item.totalprice}
+                curtadescricao={item.curtadescricao}
+                uid={item.uid}
               />
             </View>
-
           )}
           keyExtractor={(item) => item.uid.toString()}
         />
@@ -79,16 +85,18 @@ const Cart = () => {
         </View>
       )}
        <View>
-      <TouchableOpacity
-        onPress={() => console.log("Finalizar Compra")}
-        style={styles.checkoutButton}
-      >
-        <Text style={styles.checkoutText}>Finalizar Compra</Text>
-      </TouchableOpacity>
-      </View>
+         <Text style={styles.totalPrice}>Total da Compra: R$ {totalPrice.toFixed(2)}</Text>
+         <TouchableOpacity
+           onPress={() => console.log("Finalizar Compra")}
+           style={styles.checkoutButton}
+         >
+           <Text style={styles.checkoutText}>Finalizar Compra</Text>
+         </TouchableOpacity>
+       </View>
     </View>
   );
 };
+
 
 export default Cart;
 

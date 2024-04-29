@@ -57,6 +57,8 @@ export default function DetalhesProduto() {
       quantity: quantity,
       totalPrice: formattedPrice, // Corrigindo aqui para passar o novo totalPrice calculado
     });
+   
+
 
     // Exibir mensagem de item adicionado ao carrinho
     Alert.alert("Sucesso", "Item adicionado ao carrinho.");

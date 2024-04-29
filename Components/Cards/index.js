@@ -16,7 +16,8 @@ const CardCarrinho = ({ image, nome, descricao, id, price, uid, curtadescricao }
     }, {});
   
     const totalPrice = Object.values(groupItemsByUid).reduce((acc, item) => acc + item.totalPrice, 0);
-  
+   
+
     return (
       <View style={styles.container}>
         <View style={styles.cont_img}>

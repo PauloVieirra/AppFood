@@ -4,14 +4,14 @@ const styles = StyleSheet.create({
 
  container:{
    width:'100%',
-   height:120,
+   height:100,
    flexDirection:'row',
    alignItems:'center',
    backgroundColor:'#fff',
  },  
  cont_img:{
    width:100,
-   height:"100%",
+   height:100,
  },
  cont_data:{
   flex:1,
@@ -20,7 +20,9 @@ const styles = StyleSheet.create({
  },
  img:{
     width:'100%',
-    height:'100%'
+    height:'100%',
+    resizeMode:'contain',
+    backgroundColor:"#000"
  }
 
 
