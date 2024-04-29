@@ -22,7 +22,7 @@ const Goback = () => {
 
  const styles = StyleSheet.create({
   container:{
-    width:'50%',
+    flex:1,
     height:50,
     alignItems:'center',
     justifyContent:'flex-start',

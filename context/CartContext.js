@@ -8,33 +8,35 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
- 
 
   const addToCart = (item) => {
     const newItem = {
-      id: uuidv4(), // Adiciona um novo campo "id" ao item com um ID único
-      nome: item.nome,
-      descricao: item.descricao,
-      quantidade: item.quantity,
-      price: item.price,
-      image: item.image,
-      curtadescricao: item.curtadescricao,
-      uid: item.uid,
-      formatedPrice: item.formatedPrice,
-      totalPrice: item.totalPrice,
+      id: uuidv4(),
+      ...item,
+      totalPrice: item.price * item.quantity,
     };
     setCart([...cart, newItem]);
   };
 
-  const removeFromCart = (itemId) => {
-    setCart(cart.filter((item) => item.id !== itemId));
+  const removeFromCart = (itemUid) => {
+    setCart(cart.filter((item) => item.uid !== itemUid));
+  };
+
+  const updateCartItem = (itemId, newQuantity) => {
+    setCart(
+      cart.map((item) =>
+        item.id === itemId ? { ...item, quantity: newQuantity, totalPrice: item.price * newQuantity } : item
+      )
+    );
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, setCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateCartItem, setCart }}>
       {children}
     </CartContext.Provider>
   );
 };
+
+
 
 export default CartContext;

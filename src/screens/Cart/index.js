@@ -8,12 +8,12 @@ import {
   StyleSheet,
 } from "react-native";
 import { useCart } from "../../../context/CartContext";
-import MenuTop from "../../../Components/TopBar";
+import CardCarrinho from "../../../Components/Cards/index";
 import Goback from "../../../Components/Comunications/Controles";
 
 const Cart = () => {
   const { cart, removeFromCart } = useCart();
-
+  
   const groupItemsById = (items) => {
     const groupedItems = {};
 
@@ -42,43 +42,50 @@ const Cart = () => {
   return (
     <View style={styles.container}>
       {groupedCartItems.length === 0 ? (
-        <View style={{ width:'100%',height:'100%'}}>
-          <Goback/>
-           <View style={{flex:1, width:'100%', height:'100%', justifyContent:'center', alignItems:'center' }}>
+        <View style={styles.container}>
+          <View style={{ width:'100%',height:50}}>
+            <Goback/>
+          </View>
+           <View style={{width:'100%', height:'100%', justifyContent:'center', alignItems:'center' }}>
               <Text>Carrinho Vazio</Text>
            </View>
         </View>
       ) : (
-        <View style={{display:'flex', width:'100%',height:'100%'}}>
-           <MenuTop/>
+        <View style={{ width:'100%',height:'90%'}}>
+           <View style={{ width:'100%',height:50}}>
             <Goback/>
+            </View>
         <FlatList
           data={groupedCartItems}
           renderItem={({ item }) => (
+            
             <View style={styles.card}>
-              <Image source={{ uri: item.urlImage }} style={styles.image} />
-              <View style={styles.details}>
-                <Text style={styles.title}>{item.nome}</Text>
-                <Text style={styles.price}>Preço: {item.price}</Text>
-                <Text style={styles.price}>Quantidade: {item.quantidade}</Text>
-                <Text style={styles.price}>Valor Total: {item.totalPrice}</Text>
-              </View>
-              <TouchableOpacity onPress={() => removeFromCart(item.id)}>
-                <Text style={styles.removeButton}>Remover</Text>
-              </TouchableOpacity>
+              <CardCarrinho
+              descricao={item.descricao}
+              id={item.id}
+              image={item.urlImage}
+              nome={item.nome}
+              price={item.price}
+              totalprice={item.totalprice}
+              curtadescricao={item.curtadescricao}
+              uid={item.uid}
+              />
             </View>
+
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.uid.toString()}
         />
         
         </View>
       )}
+       <View>
       <TouchableOpacity
         onPress={() => console.log("Finalizar Compra")}
         style={styles.checkoutButton}
       >
         <Text style={styles.checkoutText}>Finalizar Compra</Text>
       </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -96,7 +103,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     margin: 8,
-    borderRadius: 10,
     backgroundColor: "white",
     shadowColor: "#000",
     shadowOffset: {
