@@ -18,7 +18,7 @@ import AuthContext from "../../../context/AuthContext";
 import ImagePlaceholder from "../../../assets/personimg.png";
 import styles from "./style";
 
-const ProfileCad = () => {
+const ProfileAdm = () => {
   const navigation = useNavigation();
   const { handleComplite, user } = useContext(AuthContext);
   const [nome, setNome] = useState("");
@@ -45,7 +45,7 @@ const ProfileCad = () => {
       quality: 1,
     });
 
-    
+   
 
     if (!result.canceled) {
       setImagePro(result.assets[0].uri);
@@ -150,7 +150,7 @@ const ProfileCad = () => {
         </View>
       
         <View style={styles.cont_body}>
-          <Text style={styles.title}>Cadastro de Perfil</Text>
+          <Text style={styles.title}>Cadastro de Perfil ADM</Text>
           <TextInput
             style={styles.input}
             placeholder="Nome Completo"
@@ -204,4 +204,4 @@ const ProfileCad = () => {
   );
 };
 
-export default ProfileCad;
+export default ProfileAdm;

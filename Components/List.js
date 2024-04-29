@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TextInput, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
+import { View, Text, FlatList, TextInput, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "../Servers/FirebaseConect";
 import globalStyles from "../src/app/styles";
+import { Loading } from "./Modals";
 import Card from "./Cards";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from '@expo/vector-icons';
@@ -15,61 +16,52 @@ const ListFruits = () => {
   const [activeCategory, setActiveCategory] = useState('frutas');
 
   useEffect(() => {
-    const loadLocalData = async () => {
-      try {
-        const localData = await AsyncStorage.getItem('products');
-        if (localData) {
-          setFruits(JSON.parse(localData));
-        }
-      } catch (error) {
-        console.error("Erro ao carregar dados locais:", error);
-      }
-    };
-
-    loadLocalData();
-  }, []);
-
-  useEffect(() => {
     const fetchFruits = async () => {
       setLoading(true);
       try {
-        const snapshot = await firebase
-          .database()
-          .ref(`produtos/${category}`)
-          .once("value");
-        const fruitsData = snapshot.val();
-        if (fruitsData) {
-          const fruitsArray = Object.entries(fruitsData).map(
-            ([uid, fruit]) => ({
-              uid,
-              ...fruit,
-            })
-          );
-          setFruits(fruitsArray);
-          await AsyncStorage.setItem('products', JSON.stringify(fruitsArray));
-        }
+        // Adicionar listener para ouvir mudanças no banco de dados Firebase
+        const databaseRef = firebase.database().ref(`produtos/${category}`);
+        databaseRef.on('value', (snapshot) => {
+          const fruitsData = snapshot.val();
+          if (fruitsData) {
+            const fruitsArray = Object.entries(fruitsData).map(
+              ([uid, fruit]) => ({
+                uid,
+                ...fruit,
+              })
+            );
+            setFruits(fruitsArray);
+            // Salvar os dados localmente
+            AsyncStorage.setItem('products', JSON.stringify(fruitsArray));
+          }
+          setLoading(false);
+        });
       } catch (error) {
         console.error("Erro ao buscar frutas:", error);
-      } finally {
         setLoading(false);
       }
     };
 
     fetchFruits();
-  }, [category]);
+
+    // Remover o listener quando o componente é desmontado
+    return () => {
+      firebase.database().ref(`produtos/${category}`).off();
+    };
+  }, [category]); // Executar o efeito apenas quando a categoria é alterada
 
   const handleManualUpdate = async () => {
     setLoading(true);
     try {
       // Remover os dados armazenados localmente
       await AsyncStorage.removeItem('products');
-  
+
       // Recarregar os dados locais (se houver)
       const localData = await AsyncStorage.getItem('products');
       if (localData) {
         setFruits(JSON.parse(localData));
       }
-  
+
       // Mostrar mensagem de sucesso
       Alert.alert("Sucesso", "Dados atualizados com sucesso!");
     } catch (error) {
@@ -79,7 +71,6 @@ const ListFruits = () => {
       setLoading(false);
     }
   };
-  
 
   const filteredFruits = fruits.filter((fruit) =>
     fruit.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -89,28 +80,28 @@ const ListFruits = () => {
     <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
       <View style={globalStyles.menu_list}>
         <TouchableOpacity style={[globalStyles.btn_list, activeCategory === 'frutas' ? globalStyles.activeBtn : null]} 
-        onPress={() => {
-          setCategory('frutas');
-          setActiveCategory('frutas');
-        }}>
+          onPress={() => {
+            setCategory('frutas');
+            setActiveCategory('frutas');
+          }}>
           <Text style={[globalStyles.text_list, activeCategory === 'frutas' ? globalStyles.text_active : null]}>Frutas</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity  style={[globalStyles.btn_list, activeCategory === 'vegetais' ? globalStyles.activeBtn : null]} 
-        onPress={() => {
-          setCategory('vegetais');
-          setActiveCategory('vegetais');
-        }}>
-          <Text style={[globalStyles.text_list, activeCategory === 'vegetais' ? globalStyles.text_active : null]} >Vegetais</Text>
+        <TouchableOpacity  style={[globalStyles.btn_list, activeCategory === 'legumes' ? globalStyles.activeBtn : null]} 
+          onPress={() => {
+            setCategory('legumes');
+            setActiveCategory('legumes');
+          }}>
+          <Text style={[globalStyles.text_list, activeCategory === 'legumes' ? globalStyles.text_active : null]} >Legumes</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[globalStyles.btn_list, activeCategory === 'ortalicas' ? globalStyles.activeBtn : null]} 
-        onPress={() => {
-          setCategory('ortalicas');
-          setActiveCategory('ortalicas');
-        }}>
-          <Text style={[globalStyles.text_list, activeCategory === 'ortalicas' ? globalStyles.text_active : null]}>Ortalicas</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={[globalStyles.btn_list, activeCategory === 'verduras' ? globalStyles.activeBtn : null]} 
+          onPress={() => {
+            setCategory('verduras');
+            setActiveCategory('verduras');
+          }}>
+          <Text style={[globalStyles.text_list, activeCategory === 'verduras' ? globalStyles.text_active : null]}>Verduras</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleManualUpdate}><Ionicons name="cloud-download-outline" size={24} color="black" /></TouchableOpacity>
       </View>
       <View style={globalStyles.cont_input_search}>
@@ -124,10 +115,7 @@ const ListFruits = () => {
       </View>
 
       {loading ? (
-        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-          <ActivityIndicator size="large"/>
-          <Text style={{ marginTop: 10 }}>Procurando produtos perto de você...</Text>  
-        </View>
+        <Loading/>
       ) : (
         <FlatList
           data={filteredFruits}
@@ -145,8 +133,6 @@ const ListFruits = () => {
           keyExtractor={(item) => item.uid}
         />
       )}
-
-      
     </View>
   );
 };

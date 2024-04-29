@@ -1,18 +1,24 @@
 import React, { createContext, useState, useEffect } from "react";
+import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "../Servers/FirebaseConect";
 import * as Location from 'expo-location';
+import { useNavigation } from "expo-router";
 import axios from "axios";
 
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [alertcadastro, setAlertCadastro] = useState(false);
+  const [userType, setUserType] =useState(false);
+  
+  
   
 
 
@@ -29,9 +35,9 @@ export const AuthProvider = ({ children }) => {
       }
       setLoading(false);
     };
-
+  
     checkUserLoggedIn();
-
+  
     const unsubscribe = firebase
       .auth()
       .onAuthStateChanged(async (firebaseUser) => {
@@ -42,7 +48,7 @@ export const AuthProvider = ({ children }) => {
               "Auth_user",
               JSON.stringify(firebaseUser)
             );
-
+  
             // Busca os detalhes do usuário no banco de dados em tempo real
             const userRef = firebase
               .database()
@@ -56,14 +62,9 @@ export const AuthProvider = ({ children }) => {
           }
         } else {
           setUser(null);
-          try {
-            await AsyncStorage.removeItem("Auth_user");
-          } catch (error) {
-            console.error("Error removing user data:", error);
-          }
         }
       });
-
+  
     // Cleanup function to unsubscribe from the listener
     return () => unsubscribe();
   }, []);
@@ -71,6 +72,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() =>{
     getLocation();
   },[]);
+
+  
 
   const getLocation = async () => {
     try {
@@ -126,7 +129,8 @@ export const AuthProvider = ({ children }) => {
     email,
     password,
     tipo,
-    telefone
+    nome,
+    isValidate
   ) => {
     try {
       const userCredential = await firebase
@@ -142,13 +146,15 @@ export const AuthProvider = ({ children }) => {
           email: user.email,
           uid: user.uid,
           tipo: tipo,
-          telefone: telefone,
-          cidade: endereco.cidade,
           nome: nome,
-          urlImage: urlImage,
           isValidate: isValidate, // Defina o tipo do usuário no banco de dados
           // Adicione outros campos necessários, se houver
         });
+        if (tipo === "ADM") {
+          setUserType(true);
+        }else{
+          null
+        }
       } else {
         console.error("Usuário não definido ao criar a conta");
       }
@@ -170,6 +176,65 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const handleComplite = async (nome, cidade, bairro, telefone, complemento, imagePro) => {
+    try {
+      // Verificar se o usuário está logado
+      if (!user) {
+        throw new Error("Precisa estar logado.");
+      }
+      setLoading(true);
+      // Gravação dos dados do complemento do usuário no Realtime Database 
+      await firebase
+        .database()
+        .ref(`users/${user.uid}/complemento`)
+        .set({
+          nome,
+          cidade,
+          bairro,
+          telefone,
+          complemento,
+          urlImage: imagePro || "", // Se urlImage for null, definir como string vazia
+        });
+  
+      // Atualizar isValidate para true no nó do usuário
+      await firebase
+        .database()
+        .ref(`users/${user.uid}`)
+        .update({ isValidate: true });
+  
+      // Atualizar isValidate no AsyncStorage
+      await AsyncStorage.setItem('isValidate', 'true');
+      
+      // Atualizar os dados locais do usuário
+      setUser((prevUser) => ({
+        ...prevUser,
+        isValidate: true,
+        complemento: {
+          nome,
+          cidade,
+          bairro,
+          telefone,
+          complemento,
+          urlImage: imagePro || ""
+        }
+      }));
+      setLoading(false);
+      // Exibir mensagem de sucesso
+      Alert.alert("Sucesso", "Seu cadastro está pronto!");
+      // Redirecionar para a tela de login
+    
+      setAlertCadastro(false);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Erro ao cadastrar:", error);
+      Alert.alert(
+        "Erro",
+        "Ocorreu um erro. Por favor, tente novamente."
+      );
+    }
+  };
+
+
   const handleAlertCadastro = () => {
     if (!alertcadastro) {
       setAlertCadastro(true);
@@ -187,6 +252,8 @@ export const AuthProvider = ({ children }) => {
         location,
         address,
         alertcadastro,
+        userType,
+        handleComplite,
         handleAlertCadastro,
         signInWithEmailAndPassword,
         signUpWithEmailAndPassword,

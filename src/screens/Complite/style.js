@@ -1,17 +1,27 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    position:'absolute',
-    zIndex:100,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: 'rgba(38, 38, 38, 0.8)' // Vermelho com 50% de transparência
-    
-  },
+
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+      },
+      title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+      },
+      input: {
+        width: '100%',
+        height: 40,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        marginBottom: 10,
+        paddingLeft: 10,
+      },
+
   cont_into:{
     width:'80%',
     height:'40%',
@@ -33,32 +43,59 @@ const styles = StyleSheet.create({
     height:48,
     alignItems:'flex-start',
     justifyContent:'flex-start',
-    paddingHorizontal:20,
   },
+  cont_meedle:{
+     width:'100%',
+     height:'auto',
+     justifyContent:'center',
+     alignItems:'center',
+  },
+  cont_image:{
+     width:120,
+     height:120,
+     borderRadius:60,
+  },
+    image:{
+     width:'100%',
+     height:'100%',
+     borderRadius:60,
+     backgroundColor:"#000"
+    },
+    sed_image:{
+     width:'auto',
+     height:'auto',
+     padding:10,
+     borderRadius:8,
+     margin:10,
+     backgroundColor:'green'
+    },
   btn_close:{
     width:44,
     height:44,
     justifyContent:'center',
   },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center', 
+   
+  },
   cont_body:{
-    width:'100%',
-    height:'50%',
-    justifyContent:'center',
-    paddingHorizontal:20
+    flex: 1,
+    width: '100%',
+    paddingVertical:20,
   },
   cont_bottom:{
     width:'100%',
-    height:'25%',
-    justifyContent:'center',
-    alignItems:'center',
+    height:'auto',
+    justifyContent:'flex-start',
     borderBottomEndRadius:12,
     borderBottomStartRadius:12,
-    paddingHorizontal:20,
-    backgroundColor:'#fff'
+    paddingVertical:30,
+
   },
   btn_complite:{
     width:'100%',
-    height:48,
+    height:'100%',
     borderRadius:4,
     alignItems:'center',
     justifyContent:'center',
@@ -100,24 +137,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
-
-  //Laoding
-  cont_loader:{
+  cont_loading:{
     flex:1,
     width:'100%',
     height:'100%',
     alignItems:'center',
     justifyContent:'center',
-    backgroundColor:"#fff",
+    backgroundColor:'#fff',
     position:'absolute',
     zIndex:100,
     top:0,
     left:0,
-    
-
+    right:0
   }
-  
 });
 
 export default styles;

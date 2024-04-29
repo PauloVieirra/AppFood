@@ -4,6 +4,9 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import Home from '../src/screens/Home/index';
 import DetalhesProduto from "../src/screens/Details";
 import Register from "../src/screens/Register";
+import ProfileAdm from "../src/screens/Admcomplite";
+import { Complite } from "../Components/Comunications/Orientacoes";
+import ProductEditScreen from "../src/screens/ProctEditScreen";
 import { CartProvider } from "../context/CartContext";
 import CustomDrawerContent from "../Components/CunstonDraqer";
 
@@ -54,6 +57,27 @@ function StackNavigator() {
            <AppStack.Screen 
               name="Register" 
               component={Register}
+              options={{
+                  headerShown: false,
+              }}
+          />
+            <AppStack.Screen 
+              name="ProfileAdm" 
+              component={ProfileAdm}
+              options={{
+                  headerShown: false,
+              }}
+          />
+           <AppStack.Screen 
+              name="Complite" 
+              component={Complite}
+              options={{
+                  headerShown: false,
+              }}
+          />
+           <AppStack.Screen 
+              name="ProductEditScreen" 
+              component={ProductEditScreen}
               options={{
                   headerShown: false,
               }}

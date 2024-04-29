@@ -3,17 +3,18 @@ import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
 import { useNavigation } from "expo-router";
 import AuthContext from "../../../context/AuthContext";
 import globalStyles from "../../app/styles";
-import { Fontisto, Ionicons } from "@expo/vector-icons";
+import { Fontisto, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Checkbox from "../../../Components/Checkbox";
 
 export default function SignUp() {
   const navigation = useNavigation();
   const [isFocused, setIsFocused] = useState(false);
   const { signUpWithEmailAndPassword } = useContext(AuthContext);
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [tipo, setTipo] = useState("");
-  const [telefone, setTelefone] = useState("61-99999999");
+  const [isValidate, setIsValidate] = useState(false);
   const [error, setError] = useState(null);
   const [errorEmail, setErrorEmail] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export default function SignUp() {
       setLoading(true);
       // Verifica se é um administrador ou não e define o tipo adequadamente
       const userRole = tipo === "ADM" ? "ADM" : "";
-      await signUpWithEmailAndPassword(email, password, userRole, telefone);
+      await signUpWithEmailAndPassword(email, password, userRole, nome ,isValidate);
       navigation.navigate("Home");
     } catch (error) {
       console.error("Erro ao criar a conta:", error.message); // Exibe o erro completo no console
@@ -43,6 +44,18 @@ export default function SignUp() {
 
   return (
     <View style={globalStyles.container}>
+      
+      <View style={globalStyles.line}>
+        <Text style={globalStyles.rotulos_inputs}>Primeiro nome</Text>
+        <View style={globalStyles.cont_input}>
+          <TextInput
+            style={globalStyles.input}
+            value={nome}
+            onChangeText={(text) => setNome(text)}
+          />
+          <MaterialIcons name="drive-file-rename-outline" size={24} color="black" />
+        </View>
+      </View>
       <View style={globalStyles.line}>
         <Text style={globalStyles.rotulos_inputs}>E-mail</Text>
         <View
@@ -70,7 +83,6 @@ export default function SignUp() {
             style={globalStyles.input}
             value={password}
             onChangeText={(text) => setPassword(text)}
-            placeholder="Digite sua senha"
             secureTextEntry={true}
           />
           <Ionicons name="key-outline" size={24} color="black" />

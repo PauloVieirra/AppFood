@@ -39,8 +39,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   btnselect:{
-    width:'40%',
-    height:'100%',
+    width:'90%',
+    height:100,
+    margin:6,
     justifyContent:'center',
     alignItems:'center',
     borderRadius:8,
@@ -54,8 +55,9 @@ const styles = StyleSheet.create({
     },
   },
   btn_unselect:{
-    width:'40%',
-    height:'100%',
+    width:'90%',
+    height:100,
+    margin:6,
     justifyContent:'center',
     alignItems:'center',
     borderRadius:8,

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext,useEffect } from "react";
 import AuthContext from "../../context/AuthContext";
 import { useNavigation } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
@@ -10,7 +10,6 @@ let Modalcomplite;
 export default Modalcomplite = () => {
   const navigation = useNavigation();
   const { user, alertcadastro, handleAlertCadastro } = useContext(AuthContext);
-
 
   const handleCompleteProfile = () => {
     navigation.navigate("ProfileCad");

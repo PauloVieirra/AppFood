@@ -14,6 +14,8 @@ import { useNavigation } from "expo-router";
 import { useCart } from "../../../context/CartContext";
 import MenuTop from "../../../Components/TopBar";
 import { Ionicons } from "@expo/vector-icons";
+import Goback from "../../../Components/Comunications/Controles";
+import CartComponent from "../../../Components/Carrinho";
 
 export default function DetalhesProduto() {
   const tagColors = [
@@ -32,7 +34,7 @@ export default function DetalhesProduto() {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
-  console.log(totalPrice, quantity);
+ 
 
   const formattedPrice = parseFloat(totalPrice).toFixed(2).slice(0, 6);
 
@@ -82,7 +84,10 @@ export default function DetalhesProduto() {
 
   return (
     <View style={styles.container}>
-      <MenuTop />
+      <View style={{width:'100%', height:50,flexDirection:'row'}}>
+      <Goback/>
+       <CartComponent/>
+      </View>
       <View style={styles.cont_img}>
         <Image
           source={{ uri: produto.image }}
@@ -94,22 +99,6 @@ export default function DetalhesProduto() {
         />
       </View>
       <View style={styles.cont_rating}>
-        <TouchableOpacity
-          onPress={handleClear}
-          style={{
-            width: "auto",
-            paddingHorizontal: 10,
-            height: 38,
-            borderRadius: 100,
-            backgroundColor: "#f27b77",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-          }}
-        >
-          <Ionicons name="trash-outline" size={24} color="#fff" />
-          <Text style={{ color: "#fff" }}>Cancelar</Text>
-        </TouchableOpacity>
         <View style={styles.cont_btncount}>
           <TouchableOpacity style={styles.btn} onPress={handleIncrement}>
             <Text> + </Text>
@@ -119,6 +108,10 @@ export default function DetalhesProduto() {
             <Text> - </Text>
           </TouchableOpacity>
         </View>
+        <View style={{height:38}}><Text style={styles.total_price}>R$ {formattedPrice}</Text></View>
+      </View>
+      <View style={{width:'100%',flexDirection:'row', paddingHorizontal:20}}>
+        <Text>Avaliacao do produto</Text>
       </View>
       <View style={styles.cont_rating}>
         <Text style={styles.title}>{produto.nome}</Text>
@@ -170,7 +163,7 @@ export default function DetalhesProduto() {
 
         <View style={styles.cont_count}>
           <View style={styles.cont_btnadd}>
-            <Text style={styles.total_price}>Total: R$ {formattedPrice}</Text>
+            
             <TouchableOpacity style={styles.btn_add} onPress={handleAddToCart}>
               <Text style={styles.text_btn_add}>Adicionar</Text>
             </TouchableOpacity>

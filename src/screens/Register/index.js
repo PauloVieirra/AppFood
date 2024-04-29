@@ -10,11 +10,11 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native";
-import styles from './style';
+import styles from "./style";
 import { useNavigation } from "@react-navigation/native";
 import firebase from "../../../Servers/FirebaseConect";
 import * as ImagePicker from "expo-image-picker";
-import { Entypo } from '@expo/vector-icons';
+import { Entypo } from "@expo/vector-icons";
 import { ProgressStep, ProgressSteps } from "react-native-progress-steps";
 
 const Register = ({ user }) => {
@@ -29,23 +29,19 @@ const Register = ({ user }) => {
   const [urlImage, setUrlImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [imagesent, setImageSent] = useState(false);
-  console.log(imagesent);
 
   const handleNextStep = () => {
     setStep(step + 1);
   };
-  
 
   const handlePreviousStep = () => {
     setStep(step - 1);
   };
 
   const handleClear = () => {
-    setCategory('');
+    setCategory("");
     setStep(1);
   };
-
-
 
   const pickImage = async () => {
     let permissionResult =
@@ -61,8 +57,6 @@ const Register = ({ user }) => {
       aspect: [1, 1],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -126,7 +120,6 @@ const Register = ({ user }) => {
       setImage(null);
       setImageSent(false);
       setStep(1); // Resetar para a primeira etapa
-
     } catch (error) {
       console.error("Erro ao cadastrar produto:", error);
       Alert.alert(
@@ -137,109 +130,138 @@ const Register = ({ user }) => {
   };
 
   const progressStepsStyle = {
-    activeStepIconBorderColor: '#0a0d64',
-    activeLabelColor: '#0a0d64',
-    activeStepNumColor: 'white',
-    activeStepIconColor: '#0a0d64',
-    completedStepIconColor: '#0a0d64',
-    completedProgressBarColor: '#0a0d64',
-    completedCheckColor: 'white'
+    activeStepIconBorderColor: "#0a0d64",
+    activeLabelColor: "#0a0d64",
+    activeStepNumColor: "white",
+    activeStepIconColor: "#0a0d64",
+    completedStepIconColor: "#0a0d64",
+    completedProgressBarColor: "#0a0d64",
+    completedCheckColor: "white",
   };
 
- 
-
   return (
-     <View  style={{ flex: 1 }}>
-       <ProgressSteps  {...progressStepsStyle} activeStep={step - 1}>
-
-
-       
-        <ProgressStep   label="Etapa 1" removeBtnRow={true} nextBtnDisabled={!category}>
-    <View style={{ flex: 1, height: 120, alignItems: 'center' }}>
-      {!category &&
-        <View style={styles.message_container}>
-          <Text style={styles.text_dialog}>Vamos cadastrar um produto, primeiro escolha a categoria do novo produto.</Text>
-        </View>
-      }
-      {category &&
-        <View style={styles.message_container}>
-          <Text style={styles.text_dialog}>Perfeito, vamos cadastrar {category}, toque em avancar no fim da tela.</Text>
-        </View>
-      }
-    </View>
-    <View style={{ flex: 1, height: 300, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', padding: 10 }}>
-      {category === '' || category === 'frutas' ? (
-        <TouchableOpacity
-          style={styles.btnselect}
-          onPress={() => setCategory("frutas")}
-        ><Text>Frutas</Text></TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={styles.btn_unselect}
-          disabled={true}
-          onPress={() => setCategory("frutas")}
-        ><Text style={{ color: "#010101" }}>Frutas</Text></TouchableOpacity>
-      )}
-
-      {category === '' || category === 'vegetais' ? (
-        <TouchableOpacity
-          style={styles.btnselect}
-          onPress={() => setCategory("vegetais")}
-        ><Text>Vegetais</Text></TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={styles.btn_unselect}
-          disabled={true}
-          onPress={() => setCategory("vegetais")}
-        ><Text>Vegetais</Text></TouchableOpacity>
-      )}
-    </View>
-    <View style={{paddingHorizontal:20, marginVertical:20}}>
-        { category && 
-         <Button
-          title="Cancelar"
-          onPress={handleClear}
-         />
-        }
-    </View>
-    <View style={styles.cont_bar}>
-
-      {category && step > 1 ? (
-       <Button
-        title="Etapa Anterior"
-        onPress={handlePreviousStep}
-      />
-      ) : (
-        <Button
-        title="Sair"
-        onPress={() => navigation.navigate('Home')}
-      />
-
-      )}
-     
-        <Button
-                title="Avançar"
-                onPress={handleNextStep}
-                disabled={!category}
-        />
-
-    </View>
-        </ProgressStep>
-    
-
-
-        <ProgressStep label="Etapa 2" removeBtnRow={true} nextBtnDisabled={!category}>
-          <View style={{ flex: 1, padding: 20 }}>
-          <View style={styles.message_container}>
-          <Text style={styles.text_dialog}>Atencao os dados do seu produto, os clientes preferem produtos bem descritos.</Text>
-          
+    <View style={{ flex: 1 }}>
+      <ProgressSteps {...progressStepsStyle} activeStep={step - 1}>
+        <ProgressStep
+          label="Etapa 1"
+          removeBtnRow={true}
+          nextBtnDisabled={!category}
+        >
+          <View style={{ flex: 1, height: 120, alignItems: "center" }}>
+            {!category && (
+              <View style={styles.message_container}>
+                <Text style={styles.text_dialog}>
+                  Vamos cadastrar um produto, primeiro escolha a categoria do
+                  novo produto.
+                </Text>
+              </View>
+            )}
+            {category && (
+              <View style={styles.message_container}>
+                <Text style={styles.text_dialog}>
+                  Perfeito, vamos cadastrar {category}, toque em avancar no fim
+                  da tela.
+                </Text>
+              </View>
+            )}
           </View>
+          <View
+            style={{
+              flex: 1,
+              height: 'auto',
+              alignItems: "center",
+              flexDirection: 'column',
+              justifyContent: "space-around",
+              padding: 10,
+            }}
+          >
+            {category === "" || category === "frutas" ? (
+              <TouchableOpacity
+                style={styles.btnselect}
+                onPress={() => setCategory("frutas")}
+              >
+                <Text>Frutas</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.btn_unselect}
+                disabled={true}
+                onPress={() => setCategory("frutas")}
+              >
+                <Text style={{ color: "#010101" }}>Frutas</Text>
+              </TouchableOpacity>
+            )}
+
+            {category === "" || category === "legumes" ? (
+              <TouchableOpacity
+                style={styles.btnselect}
+                onPress={() => setCategory("legumes")}
+              >
+                <Text>Legumes</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.btn_unselect}
+                disabled={true}
+                onPress={() => setCategory("legumes")}
+              >
+                <Text>Legumes</Text>
+              </TouchableOpacity>
+            )}
+             {category === "" || category === "verduras" ? (
+              <TouchableOpacity
+                style={styles.btnselect}
+                onPress={() => setCategory("verduras")}
+              >
+                <Text>Verduras</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.btn_unselect}
+                disabled={true}
+                onPress={() => setCategory("verduras")}
+              >
+                <Text>Verduras</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+            {category && <Button title="Cancelar" onPress={handleClear} />}
+          </View>
+          <View style={styles.cont_bar}>
+            {category && step > 1 ? (
+              <Button title="Etapa Anterior" onPress={handlePreviousStep} />
+            ) : (
+              <Button
+                title="Sair"
+                onPress={() => navigation.navigate("Home")}
+              />
+            )}
+
+            <Button
+              title="Avançar"
+              onPress={handleNextStep}
+              disabled={!category}
+            />
+          </View>
+        </ProgressStep>
+
+        <ProgressStep
+          label="Etapa 2"
+          removeBtnRow={true}
+          nextBtnDisabled={!category}
+        >
+          <View style={{ flex: 1, padding: 20 }}>
+            <View style={styles.message_container}>
+              <Text style={styles.text_dialog}>
+                Atencao os dados do seu produto, os clientes preferem produtos
+                bem descritos.
+              </Text>
+            </View>
             <View style={{ flex: 1, padding: 20 }}>
               <Text
                 style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}
-              >
-                
-              </Text>
+              ></Text>
               <TextInput
                 style={{
                   marginBottom: 10,
@@ -293,91 +315,96 @@ const Register = ({ user }) => {
                 multiline
                 maxLength={283}
               />
-             
             </View>
-           
           </View>
           <View style={styles.cont_bar}>
-      
-      <Button
-        title="Etapa Anterior"
-        onPress={handlePreviousStep}
-      />
-        <Button
-                title="Próxima Etapa"
-                onPress={handleNextStep}
-                disabled={!category || !nome || !curtadescricao || !price || !descricao }
-        />
-
-       </View>
+            <Button title="Etapa Anterior" onPress={handlePreviousStep} />
+            <Button
+              title="Próxima Etapa"
+              onPress={handleNextStep}
+              disabled={
+                !category || !nome || !curtadescricao || !price || !descricao
+              }
+            />
+          </View>
         </ProgressStep>
 
-        <ProgressStep label="Etapa 3" removeBtnRow={true} nextBtnDisabled={!category} style={{flex:1}} >
-          <View style={{ flex: 1, height:'auto', justifyContent:'center', alignItems:'center'}}>
+        <ProgressStep
+          label="Etapa 3"
+          removeBtnRow={true}
+          nextBtnDisabled={!category}
+          style={{ flex: 1 }}
+        >
+          <View
+            style={{
+              flex: 1,
+              height: "auto",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}
+            >
+              Etapa 3: Envie uma imagem
+            </Text>
 
-                <Text
-                style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}
-              >
-                Etapa 3: Envie uma imagem
-              </Text>
-          
-            <View style={{ flex: 1, backgroundColor:"#dedede"}}>
-               
-              
+            <View style={{ flex: 1, backgroundColor: "#dedede" }}>
               {image && (
                 <Image
                   source={{ uri: image }}
                   style={{ width: 300, height: 300 }}
                 />
               )}
-             
 
               {uploading && <ActivityIndicator size="large" color="#0000ff" />}
 
               {image && uploading && <Text>Enviando imagem...</Text>}
-
-            
-             
             </View>
           </View>
-          <View style={{paddingHorizontal:20, marginVertical:10,justifyContent:'center',  flexDirection:'column'}}>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              marginVertical: 10,
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
             {imagesent === false && !image ? (
-                <Button title="Selecionar imagem" onPress={pickImage} />
-            ):(
-                <Button title="Mudar imagem" onPress={pickImage} disabled={imagesent === true}/> 
+              <Button title="Selecionar imagem" onPress={pickImage} />
+            ) : (
+              <Button
+                title="Mudar imagem"
+                onPress={pickImage}
+                disabled={imagesent === true}
+              />
             )}
-           
+          </View>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              marginVertical: 30,
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            {imagesent === false && image && !uploading ? (
+              <Button title="Enviar Imagem" onPress={handleUploadImage} />
+            ) : null}
+            {imagesent === true ? <Text>Imagem enviada</Text> : null}
+          </View>
 
-          </View>
-          <View style={{paddingHorizontal:20, marginVertical:30, justifyContent:'center', flexDirection:'column'}}>
-              {imagesent === false && image && !uploading ? (
-                <Button title="Enviar Imagem" onPress={handleUploadImage} />
-              ) : (
-               null
-              ) }
-               {imagesent === true ? (
-                <Text>Imagem enviada</Text>
-              ) : (
-               null
-              ) }
-          </View>
-          
           <View style={styles.cont_bar}>
-      
-      <Button
-        title="Etapa Anterior"
-        onPress={handlePreviousStep}
-      />
-        <Button
-                title="Próxima Etapa"
-                onPress={handleNextStep}
-                disabled={!category || !nome || !curtadescricao || !price || !descricao }
-        />
-
-       </View>
+            <Button title="Etapa Anterior" onPress={handlePreviousStep} />
+            <Button
+              title="Próxima Etapa"
+              onPress={handleNextStep}
+              disabled={
+                !category || !nome || !curtadescricao || !price || !descricao
+              }
+            />
+          </View>
         </ProgressStep>
-
-
 
         <ProgressStep label="Etapa 4">
           <View style={{ flex: 1, padding: 20 }}>
@@ -400,12 +427,9 @@ const Register = ({ user }) => {
             </View>
             <Text>teste</Text>
           </View>
-           
         </ProgressStep>
-        
       </ProgressSteps>
-     
-      </View>
+    </View>
   );
 };
 

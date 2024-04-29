@@ -1,4 +1,4 @@
-import React,{useState, useContext} from "react";
+import React,{ useContext} from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
@@ -6,32 +6,16 @@ import AuthContext from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
 
-const MenuTop = () => {
+const CartComponent = () => {
   const navigation = useNavigation();
-  const { user, location, address } = useContext(AuthContext);
   const { cart } = useCart();
-
-
-  const toggleDrawer = () => {
-    navigation.toggleDrawer();
-  };
-
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={toggleDrawer}>
-        <Feather name="menu" size={24} color="black" />
-      </TouchableOpacity>
-      {address && (
-          <Text>
-            {address.city},{" "}{address.road}
-          </Text>
-        )}
       <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
         <Feather name="shopping-cart" size={24} color="black" />
         <View style={[styles.cartContainer, { backgroundColor: cart.length > 0 ? '#48c400' : '#878787' }]}>
           <Text style={{color:'#fff'}}>{cart.length}</Text>
         </View>
-        
       </TouchableOpacity>
     </View>
   );
@@ -39,11 +23,11 @@ const MenuTop = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: "50%",
     height: 60,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent:'flex-end',
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
@@ -60,5 +44,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MenuTop;
+export default CartComponent;
 

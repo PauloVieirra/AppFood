@@ -1,5 +1,12 @@
 import React, { useState, useContext } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { useCart } from "../context/CartContext";
 import AuthContext from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -8,10 +15,9 @@ import globalStyles from "../src/app/styles";
 const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
   const navigation = useNavigation();
   const { addToCart } = useCart();
-  const {user, handleAlertCadastro} = useContext(AuthContext);
+  const { user, handleAlertCadastro } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
-
 
   const handleAddToCart = () => {
     addToCart({
@@ -28,12 +34,17 @@ const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
   };
 
   const handlePressAdd = () => {
-    if (user.isValidate){
+    if (user.tipo === "ADM") {
+      // Se o usuário for do tipo ADM, chama a função para navegar para a tela de edição de produto
+      navigateToProductEditScreen();
+    } else if (user.isValidate) {
+      // Se o usuário for válido, adiciona ao carrinho
       handleAddToCart();
-    }else{
+    } else {
+      // Se o usuário não for válido, exibe um alerta de cadastro
       handleAlertCadastro(true);
     }
-  }
+  };
 
   const handleCompleteProfile = () => {
     setShowModal(false);
@@ -44,6 +55,21 @@ const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
     setShowModal(false);
   };
 
+  const navigateToProductEditScreen = () => {
+    navigation.navigate("ProductEditScreen", {
+      produto: {
+        image,
+        nome,
+        descricao,
+        id,
+        formattedPrice,
+        curtadescricao,
+        uid,
+        quantity,
+        price,
+      },
+    });
+  }
 
   const handleCardPress = () => {
     // Navegue para a tela de detalhes, passando os dados do produto como parâmetro
@@ -67,35 +93,37 @@ const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
 
   return (
     <>
-    <TouchableOpacity onPress={handleCardPress} style={styles.touche_view}>
-      <View style={styles.card}>
-        <View style={styles.topcard}>
-          <TouchableOpacity />
-        </View>
-        <View style={styles.geralrow}>
-          <Image source={{ uri: image }} style={styles.image} />
-          <View style={styles.details}>
-            <Text style={styles.title}>{nome}</Text>
-            <Text style={styles.curt_descricao}>{curtadescricao}</Text>
-            <View style={styles.row}>
-              <Text style={styles.price}>
-                <Text style={{ color: "#969799", fontWeight: "300" }}>R$</Text>{" "}
-                {formattedPrice}
-              </Text>
-              <TouchableOpacity
-                style={styles.btn_add_cart}
-                onPress={handlePressAdd}
-              >
-                <Text style={{ fontWeight: "500", color: "#454545" }}>
-                  Add carrinho
+      <TouchableOpacity onPress={handleCardPress} style={styles.touche_view}>
+        <View style={styles.card}>
+          <View style={styles.topcard}>
+            <TouchableOpacity />
+          </View>
+          <View style={styles.geralrow}>
+            <Image source={{ uri: image }} style={styles.image} />
+            <View style={styles.details}>
+              <Text style={styles.title}>{nome}</Text>
+              <Text style={styles.curt_descricao}>{curtadescricao}</Text>
+              <View style={styles.row}>
+                <Text style={styles.price}>
+                  <Text style={{ color: "#969799", fontWeight: "300" }}>
+                    R$
+                  </Text>{" "}
+                  {formattedPrice}
                 </Text>
-              </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.btn_add_cart}
+                  onPress={handlePressAdd}
+                >
+                  <Text style={{ fontWeight: "500", color: "#454545" }}>
+                    {user.tipo === "ADM" ? "Editar" : "Add Carrinho"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
-   
+      </TouchableOpacity>
     </>
   );
 };

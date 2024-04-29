@@ -8,6 +8,8 @@ import {
   StyleSheet,
 } from "react-native";
 import { useCart } from "../../../context/CartContext";
+import MenuTop from "../../../Components/TopBar";
+import Goback from "../../../Components/Comunications/Controles";
 
 const Cart = () => {
   const { cart, removeFromCart } = useCart();
@@ -39,10 +41,17 @@ const Cart = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Itens no Carrinho:</Text>
       {groupedCartItems.length === 0 ? (
-        <Text>O carrinho está vazio</Text>
+        <View style={{ width:'100%',height:'100%'}}>
+          <Goback/>
+           <View style={{flex:1, width:'100%', height:'100%', justifyContent:'center', alignItems:'center' }}>
+              <Text>Carrinho Vazio</Text>
+           </View>
+        </View>
       ) : (
+        <View style={{display:'flex', width:'100%',height:'100%'}}>
+           <MenuTop/>
+            <Goback/>
         <FlatList
           data={groupedCartItems}
           renderItem={({ item }) => (
@@ -61,6 +70,8 @@ const Cart = () => {
           )}
           keyExtractor={(item) => item.id.toString()}
         />
+        
+        </View>
       )}
       <TouchableOpacity
         onPress={() => console.log("Finalizar Compra")}
