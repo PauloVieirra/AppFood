@@ -10,27 +10,38 @@ export const CartProvider = ({ children }) => {
   console.log(cart);
 
   const addToCart = (item) => {
-  const newItem = {
-    id: uuidv4(),
-    ...item,
-    totalPrice: item.price * item.quantity, // Aqui você está considerando a quantidade inicial
-  };
-  setCart([...cart, newItem]);
-};
+    const existingItemIndex = cart.findIndex((cartItem) => cartItem.uid === item.uid);
 
+    if (existingItemIndex !== -1) {
+      const updatedCart = [...cart];
+      updatedCart[existingItemIndex] = {
+        ...updatedCart[existingItemIndex],
+        quantity: updatedCart[existingItemIndex].quantity + item.quantity,
+        totalPrice: updatedCart[existingItemIndex].price * (updatedCart[existingItemIndex].quantity + item.quantity),
+      };
+      setCart(updatedCart);
+    } else {
+      const newItem = {
+        id: uuidv4(),
+        ...item,
+        totalPrice: item.price * item.quantity,
+      };
+      setCart([...cart, newItem]);
+    }
+  };
 
   const removeFromCart = (itemUid) => {
     setCart(cart.filter((item) => item.uid !== itemUid));
-
   };
 
   const updateCartItem = (itemId, newQuantity) => {
     setCart(
-      cart.map((item) =>
-        item.id === itemId ? { ...item, quantity: newQuantity, totalPrice: item.price * newQuantity } : item
-      )
+        cart.map((item) =>
+            item.uid === itemId ? { ...item, quantity: newQuantity, totalPrice: item.price * newQuantity } : item
+        )
     );
-  };
+};
+
 
   return (
     <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateCartItem, setCart }}>
@@ -38,7 +49,5 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
-
-
 
 export default CartContext;

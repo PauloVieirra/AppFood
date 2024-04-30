@@ -5,14 +5,14 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styles from './style';
 
 const CardCarrinho = ({ image, nome, price, uid }) => {
-    const { cart, removeFromCart, updateCartItem, addToCart } = useContext(CartContext);
+    const { cart, removeFromCart, updateCartItem } = useContext(CartContext);
 
     // Encontra o item correspondente no carrinho com base no uid
     const cartItem = cart.find(item => item.uid === uid);
 
     // Estado local para a quantidade do item
     const [quantity, setQuantity] = useState(cartItem ? cartItem.quantity : 0);
-
+    
     // Atualiza a quantidade local sempre que o item no carrinho mudar
     useEffect(() => {
         if (cartItem) {
@@ -36,22 +36,14 @@ const CardCarrinho = ({ image, nome, price, uid }) => {
         }
     };
 
-    // Adiciona o item ao carrinho com a quantidade correta
-    const handleAddToCart = () => {
-        addToCart({ image, nome, price, uid, quantity: 1 });
+    // Função para calcular o valor total do item
+    const calculateTotalPrice = () => {
+        if (cartItem) {
+            return (cartItem.price * quantity).toFixed(2); // Calcula o novo valor total com base na nova quantidade
+        } else {
+            return 0;
+        }
     };
-
-
-
-// Função para calcular o valor total do item
-const calculateTotalPrice = () => {
-    if (cartItem) {
-        return (cartItem.price * quantity).toFixed(2); // Calcula o novo valor total com base na nova quantidade
-    } else {
-        return 0;
-    }
-};
-
 
     return (
         <View style={styles.container}>
