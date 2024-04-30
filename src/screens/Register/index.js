@@ -29,6 +29,28 @@ const Register = ({ user }) => {
   const [urlImage, setUrlImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [imagesent, setImageSent] = useState(false);
+  const [unidade, setUnidade] = useState("");
+  const [showOptions, setShowOptions] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+  console.log(selectedOption);
+
+  const unidadesMedida = [
+    { label: 'Quilograma (kg)', value: 'kg' },
+    { label: 'Grama (g)', value: 'g' },
+    { label: 'Litro (L)', value: 'L' },
+    { label: 'Mililitro (mL)', value: 'mL' },
+    // Adicione mais opções conforme necessário
+  ];
+
+  const toggleOptions = () => {
+    setShowOptions(!showOptions);
+  };
+
+  const handleOptionSelect = (value) => {
+
+    setSelectedOption(value);
+    setShowOptions(false);
+  };
 
   const handleNextStep = () => {
     setStep(step + 1);
@@ -106,6 +128,8 @@ const Register = ({ user }) => {
           price,
           descricao,
           curtadescricao,
+          unidade,
+          selectedOption,
           urlImage: urlImage || "", // Se urlImage for null, definir como string vazia
         });
 
@@ -113,6 +137,8 @@ const Register = ({ user }) => {
       // Limpar os dados do formulário
       setNome("");
       setPrice("");
+      setUnidade("");
+      setSelectedOption(null)
       setCategory("");
       setDescricao("");
       setCurtaDescricao("");
@@ -300,6 +326,61 @@ const Register = ({ user }) => {
                 onChangeText={setPrice}
                 keyboardType="numeric"
               />
+              <View>
+              <View  style={{
+                  width:'100%',
+                  marginBottom: 10,
+                  flexDirection:'row',
+                }}>
+
+              
+               <TextInput
+                style={{
+                  flex:1,
+                  padding: 10,
+                  borderWidth: 1,
+                  borderColor: "#ccc",
+                  borderRadius: 5,
+                  marginRight:5,
+                }}
+                placeholder="Quantidade"
+                value={unidade}
+                onChangeText={setUnidade}
+                keyboardType="numeric"
+              />
+
+                 <TouchableOpacity   style={{
+                  flex:1,
+                  padding: 10,
+                  borderWidth: 1,
+                  borderColor: "#ccc",
+                  borderRadius: 5,
+                  marginLeft:5,
+                }} onPress={toggleOptions}>
+                    <Text>{selectedOption || 'Selecione uma opção'}</Text>
+                  </TouchableOpacity>
+
+
+                 
+              </View>
+                    {showOptions && (
+                    <View style={styles.dropdownOptions}>
+                      {unidadesMedida.map((option) => (
+                        <TouchableOpacity
+                          key={option.value}
+                          style={styles.option}
+                          onPress={() => handleOptionSelect(option.value)}
+                        >
+                          <Text>{option.label}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+
+              </View>
+
+           
+
               <TextInput
                 style={{
                   marginBottom: 10,

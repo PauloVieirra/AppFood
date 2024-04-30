@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import firebase from "../../../Servers/FirebaseConect";
+import Goback from "../../../Components/Comunications/Controles";
 import * as ImagePicker from "expo-image-picker";
 
 const ProductEditScreen = ({ route, navigation }) => {
@@ -67,6 +68,7 @@ const ProductEditScreen = ({ route, navigation }) => {
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
+        <Goback/>
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
         Editar Produto
       </Text>

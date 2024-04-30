@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     borderRadius:24,
-    backgroundColor:'#dedede'
+    backgroundColor:'#E85100'
  },
  cont_btncount: {
     flexDirection: "row",

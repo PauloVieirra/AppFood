@@ -128,6 +128,9 @@ const ListFruits = () => {
               price={item.price}
               curtadescricao={item.curtadescricao}
               uid={item.uid}
+              unidade={item.unidade}
+              selectedOption={item.selectedOption}
+              
             />
           )}
           keyExtractor={(item) => item.uid}

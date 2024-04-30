@@ -89,6 +89,8 @@ const Cart = () => {
                   image={item.image}
                   nome={item.nome}
                   price={item.price}
+                  unidade={item.unidade}
+                  selectedOption={item.selectedOption}
                   totalprice={item.totalprice}
                   curtadescricao={item.curtadescricao}
                   uid={item.uid}

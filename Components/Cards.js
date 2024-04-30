@@ -12,7 +12,7 @@ import AuthContext from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../src/app/styles";
 
-const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
+const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade, selectedOption }) => {
   const navigation = useNavigation();
   const { addToCart } = useCart();
   const { user, handleAlertCadastro } = useContext(AuthContext);
@@ -30,6 +30,8 @@ const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
       totalPrice,
       curtadescricao,
       price,
+      unidade,
+      selectedOption,
     });
   };
 
@@ -67,6 +69,8 @@ const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
         uid,
         quantity,
         price,
+        unidade,
+        selectedOption,
       },
     });
   }
@@ -84,6 +88,8 @@ const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
         uid,
         quantity,
         price,
+        unidade,
+        selectedOption,
       },
     });
   };
@@ -110,6 +116,7 @@ const Card = ({ image, nome, descricao, id, price, uid, curtadescricao }) => {
                   </Text>{" "}
                   {formattedPrice}
                 </Text>
+                <Text>{unidade}{''}{selectedOption !== null && selectedOption !== undefined ? `(${selectedOption})` : ''}</Text>
 
                 <TouchableOpacity
                   style={styles.btn_add_cart}

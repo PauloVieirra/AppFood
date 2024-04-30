@@ -34,6 +34,7 @@ export const CartProvider = ({ children }) => {
     setCart(cart.filter((item) => item.uid !== itemUid));
   };
 
+  
   const updateCartItem = (itemId, newQuantity) => {
     setCart(
         cart.map((item) =>

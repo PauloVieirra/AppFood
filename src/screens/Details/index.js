@@ -54,6 +54,8 @@ export default function DetalhesProduto() {
       id: produto.id,
       uid: produto.uid,
       price: produto.price,
+      unidade:produto.unidade,
+      selectedOption:produto.selectedOption,
       quantity: quantity,
       totalPrice: formattedPrice, // Corrigindo aqui para passar o novo totalPrice calculado
     });
@@ -113,14 +115,13 @@ export default function DetalhesProduto() {
         <View style={{height:38}}><Text style={styles.total_price}>R$ {formattedPrice}</Text></View>
       </View>
       <View style={{width:'100%',flexDirection:'row', paddingHorizontal:20}}>
-        <Text>Avaliacao do produto</Text>
       </View>
       <View style={styles.cont_rating}>
         <Text style={styles.title}>{produto.nome}</Text>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ fontSize: 16 }}>R$:</Text>
           <Text style={styles.price}>{produto.formattedPrice}</Text>
-          <Text style={{ fontSize: 10 }}> kg</Text>
+          <Text style={{ fontSize: 10 }}>{produto.unidade}{''}{produto.selectedOption !== null && produto.selectedOption !== undefined ? `(${produto.selectedOption})` : ''}</Text>
         </View>
       </View>
       <View style={styles.cont_datas}>

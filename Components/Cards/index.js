@@ -4,7 +4,7 @@ import CartContext from '../../context/CartContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styles from './style';
 
-const CardCarrinho = ({ image, nome, price, uid }) => {
+const CardCarrinho = ({ image, nome, price, uid, unidade, selectedOption }) => {
     const { cart, removeFromCart, updateCartItem } = useContext(CartContext);
 
     // Encontra o item correspondente no carrinho com base no uid
@@ -54,12 +54,12 @@ const CardCarrinho = ({ image, nome, price, uid }) => {
                 <View style={styles.data_a}>
                     <Text style={styles.text_nome}>{nome}</Text>
                     <TouchableOpacity onPress={() => removeFromCart(uid)} style={styles.btn_remover} >
-                        <MaterialCommunityIcons name="trash-can-outline" size={26} color="black" />
+                        <MaterialCommunityIcons name="trash-can-outline" size={26} color="white" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.data_a}>
-                    <Text style={styles.text_price}>R$ {price}</Text>
-                    <Text style={styles.text_quantidade}>Quantidade: {quantity}</Text>
+                    <Text style={styles.text_price}>R$ {price}{' '}por{' '}{unidade}{' '}{selectedOption}</Text>
+                    <Text style={styles.text_quantidade}></Text>
                 </View>
                 <View style={styles.data_a}>
                     <View style={{ minWidth: '30%' }}>

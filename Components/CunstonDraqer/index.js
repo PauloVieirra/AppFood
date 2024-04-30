@@ -52,17 +52,23 @@ const CustomDrawerContent = () => {
         <View style={styles.container}>
           <View style={styles.cont_sup} />
           <View style={styles.cont_image}>
+
             {user.isValidate && user.complemento.urlImage ? (
               <Image
                 source={{ uri: user.complemento.urlImage }}
                 style={styles.image}
               />
+
             ) : (
+
               <Image source={Imageplaceholder} style={styles.image} />
+
             )}
 
             <View style={styles.cont_btn_edit}>
+
               <EvilIcons name="pencil" size={35} color="black" />
+              
             </View>
           </View>
           <View style={styles.cont_space} />

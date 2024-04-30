@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, ScrollView } from "react-native";
 import { useNavigation } from "expo-router";
 import AuthContext from "../../../context/AuthContext";
 import globalStyles from "../../app/styles";
+import styles from './style';
 import {
   Fontisto,
   Ionicons,
@@ -34,7 +35,10 @@ export default function Signin() {
   };
 
   return (
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
     <View style={globalStyles.container}>
+      <View style={{height:160}}/>
+ <View style={globalStyles.line_input}>
       <View style={globalStyles.line}>
         <Text style={globalStyles.rotulos_inputs}>E-mail</Text>
         <View
@@ -76,6 +80,8 @@ export default function Signin() {
           )}
         </View>
       </View>
+      </View>
+      
       <View style={globalStyles.line_btn}>
         <TouchableOpacity style={globalStyles.primary_button}>
           <Text style={globalStyles.text_button} onPress={handleSignIn}>
@@ -115,7 +121,12 @@ export default function Signin() {
             margin={10}
           />
         </View>
+        <View style={{height:'10%'}}/>
       </View>
+      <View style={styles.cont_terms}>
+        <TouchableOpacity onPress={() => navigation.navigate('TermPrivacity')}><Text>Termos de uso e privaciade</Text></TouchableOpacity>
+        </View>
     </View>
+    </ScrollView>
   );
 }
