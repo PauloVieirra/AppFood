@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext } from "react";
-
 import { v4 as uuidv4 } from "uuid";
 
 const CartContext = createContext();
@@ -8,18 +7,21 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  console.log(cart);
 
   const addToCart = (item) => {
-    const newItem = {
-      id: uuidv4(),
-      ...item,
-      totalPrice: item.price * item.quantity,
-    };
-    setCart([...cart, newItem]);
+  const newItem = {
+    id: uuidv4(),
+    ...item,
+    totalPrice: item.price * item.quantity, // Aqui você está considerando a quantidade inicial
   };
+  setCart([...cart, newItem]);
+};
+
 
   const removeFromCart = (itemUid) => {
     setCart(cart.filter((item) => item.uid !== itemUid));
+
   };
 
   const updateCartItem = (itemId, newQuantity) => {
