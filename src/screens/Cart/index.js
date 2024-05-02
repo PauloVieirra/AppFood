@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -8,53 +8,74 @@ import {
   StyleSheet,
 } from "react-native";
 import { useCart } from "../../../context/CartContext";
+import AuthContext from "../../../context/AuthContext";
+import { useNavigation } from "expo-router";
 import CardCarrinho from "../../../Components/Cards/index";
+import { PagamentoInfo } from "../../../Components/Comunications/Orientacoes";
 import Goback from "../../../Components/Comunications/Controles";
 
 const Cart = () => {
+  const navigation = useNavigation();
+  const { user, alertNoPayments ,handleAlertNoPayment } = useContext(AuthContext);
   const { cart, removeFromCart, updateCartItem } = useCart();
   const [groupedCartItems, setGroupedCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
+  const handlePayType = () => {
+        handleAlertNoPayment(true);
+  }
+
   // Função para agrupar os itens por UID
   const groupItemsById = (items) => {
-      const groupedItems = {};
+    const groupedItems = {};
 
-      items.forEach((item) => {
-          if (!groupedItems[item.uid]) {
-              groupedItems[item.uid] = {
-                  ...item,
-                  totalPrice: parseFloat(item.totalPrice), // Convertendo para número
-                  quantity: item.quantity,
-              };
-          } else {
-              groupedItems[item.uid].quantity += item.quantity;
-              groupedItems[item.uid].totalPrice += parseFloat(item.totalPrice); // Convertendo para número e somando
-          }
-      });
+    items.forEach((item) => {
+      if (!groupedItems[item.uid]) {
+        groupedItems[item.uid] = {
+          ...item,
+          totalPrice: parseFloat(item.totalPrice), // Convertendo para número
+          quantity: item.quantity,
+        };
+      } else {
+        groupedItems[item.uid].quantity += item.quantity;
+        groupedItems[item.uid].totalPrice += parseFloat(item.totalPrice); // Convertendo para número e somando
+      }
+    });
 
-      // Converte o objeto de itens agrupados de volta em um array
-      return Object.values(groupedItems);
+    // Converte o objeto de itens agrupados de volta em um array
+    return Object.values(groupedItems);
   };
 
   // Função para atualizar o carrinho e o preço total sempre que a quantidade de um item é alterada
   const handleUpdateCartItem = (uid, newQuantity) => {
-      updateCartItem(uid, newQuantity);
+    updateCartItem(uid, newQuantity);
   };
 
   // Atualiza o preço total sempre que o carrinho mudar
   useEffect(() => {
-      const updatedGroupedCartItems = groupItemsById(cart);
-      setGroupedCartItems(updatedGroupedCartItems);
+    const updatedGroupedCartItems = groupItemsById(cart);
+    setGroupedCartItems(updatedGroupedCartItems);
 
-      // Calcula o novo preço total
-      const newTotalPrice = updatedGroupedCartItems.reduce(
-          (total, item) => total + item.totalPrice,
-          0
-      );
-      setTotalPrice(newTotalPrice);
+    // Calcula o novo preço total
+    const newTotalPrice = updatedGroupedCartItems.reduce(
+      (total, item) => total + item.totalPrice,
+      0
+    );
+    setTotalPrice(newTotalPrice);
+   
   }, [cart]); // Atualiza sempre que o carrinho mudar
 
+  const handlePressPay = () => {
+    if (user.tipo === "ADM") {
+      console.log('Clicou ADM')
+    } else if (user.isValidate) {
+      navigation.navigate('PaymentScreen');
+      
+    } else {
+      // Se o usuário não for válido, exibe um alerta de cadastro
+      handlePayType();
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -75,10 +96,12 @@ const Cart = () => {
           </View>
         </View>
       ) : (
-        <View style={{ width: "100%", height: "100%", }}>
+        <View style={{ width: "100%", height: "100%" }}>
           <View style={{ width: "100%", height: 50 }}>
             <Goback />
+            
           </View>
+          {alertNoPayments === true &&  <PagamentoInfo/>}
           <FlatList
             data={groupedCartItems}
             renderItem={({ item }) => (
@@ -99,16 +122,27 @@ const Cart = () => {
               </View>
             )}
             keyExtractor={(item) => item.uid.toString()}
-          />
+          /> 
+
+          
+         
 
           <View style={styles.cont_bottom}>
-            <View style={{width:'50%', height:'100%', maxHeight:100, justifyContent:"center", backgroundColor:"#F1F2F1", alignItems:'center'}}>
-               <Text style={styles.totalPrice}>
-              R$ {totalPrice.toFixed(2)}
-            </Text>
+          
+            <View
+              style={{
+                width: "50%",
+                height: "100%",
+                maxHeight: 100,
+                justifyContent: "center",
+                backgroundColor: "#F1F2F1",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.totalPrice}>R$ {totalPrice.toFixed(2)}</Text>
             </View>
             <TouchableOpacity
-              onPress={() => console.log("Finalizar Compra")}
+              onPress={handlePressPay}
               style={styles.checkoutButton}
             >
               <Text style={styles.checkoutText}>Confirmar</Text>
@@ -116,6 +150,9 @@ const Cart = () => {
           </View>
         </View>
       )}
+    
+
+
     </View>
   );
 };
@@ -128,15 +165,15 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "#fff",
-    paddingHorizontal:10,
+    paddingHorizontal: 10,
   },
   card: {
     flexDirection: "column",
     alignItems: "center",
     width: "100%",
     backgroundColor: "#fff",
-    borderBottomWidth:1,
-    borderBottomColor:'#ccc',
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
   geralrow: {
     flexDirection: "row",
@@ -176,30 +213,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  cont_bottom:{
-    width:'100%',
-    height:60,
-    maxHeight:130,
-    flexDirection:'row',
-    backgroundColor:"DEDEDE"
+  cont_bottom: {
+    width: "100%",
+    height: 60,
+    maxHeight: 130,
+    flexDirection: "row",
+    backgroundColor: "DEDEDE",
   },
-  checkoutButton:{
-    width:'50%',
-    height:'100%',
-    backgroundColor:'green',
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'center'
-    
+  checkoutButton: {
+    width: "50%",
+    height: "100%",
+    backgroundColor: "green",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  checkoutText:{
-    fontSize:20,
-    fontWeight:'700',
-    color:'white'
+  checkoutText: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "white",
   },
-  totalPrice:{
-    fontSize:26,
-    fontWeight:'600',
-    color:"#131313"
-  }
+  totalPrice: {
+    fontSize: 26,
+    fontWeight: "600",
+    color: "#131313",
+  },
 });

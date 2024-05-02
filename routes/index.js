@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
+import TabBar from "../Components/Tab";
 import AuthRoutes from "./AuthRoutes";
 import AppRoutes from "./AppRoutes";
 import AdmRoutes from "./AdmRoutes"; // Importe a nova rota de administração
@@ -28,7 +29,7 @@ function Routes() {
   }
 
   // Se não for ADM, renderiza as rotas de usuário normal
-  return <AppRoutes />;
+  return  <AppRoutes />;
 }
 
 export default Routes;

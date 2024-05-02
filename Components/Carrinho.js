@@ -23,22 +23,19 @@ const CartComponent = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "50%",
+    width: "100%",
     height: 60,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:'flex-end',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    justifyContent: "center",
   },
   cartContainer:{
-    width:24,
-    height:24,
+    width:22,
+    height:22,
     position:'absolute',
     top:12,
     right:15,
     borderRadius:40,
-    backgroundColor:'red',
     justifyContent:'center',
     alignItems:'center',
   }

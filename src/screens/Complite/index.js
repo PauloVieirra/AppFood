@@ -128,7 +128,7 @@ const ProfileCad = () => {
 
         <View style={styles.cont_meedle}>
 
-          {user.isValite === true  ? (
+        {user.isValidate && user.complemento.urlImage ? (
             <TouchableOpacity onPress={pickImage} style={styles.cont_image}>
               <Image
                 source={{ uri: user.complemento.urlImage }}
@@ -188,14 +188,7 @@ const ProfileCad = () => {
         <Button
           title="Registrar"
           onPress={handleUploadImageAndRegister}
-          disabled={
-            !nome ||
-            !cidade ||
-            !bairro ||
-            !telefone ||
-            !complemento ||
-            !imagePro
-          }
+         
         />
         
       </View>

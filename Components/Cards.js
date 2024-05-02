@@ -16,7 +16,6 @@ const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade,
   const navigation = useNavigation();
   const { addToCart } = useCart();
   const { user, handleAlertCadastro } = useContext(AuthContext);
-  const [showModal, setShowModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = () => {
@@ -39,23 +38,13 @@ const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade,
     if (user.tipo === "ADM") {
       // Se o usuário for do tipo ADM, chama a função para navegar para a tela de edição de produto
       navigateToProductEditScreen();
-    } else if (user.isValidate) {
+    } else {
       // Se o usuário for válido, adiciona ao carrinho
       handleAddToCart();
-    } else {
-      // Se o usuário não for válido, exibe um alerta de cadastro
-      handleAlertCadastro(true);
-    }
+    } 
   };
 
-  const handleCompleteProfile = () => {
-    setShowModal(false);
-    navigation.navigate("Profile"); // Navegue para a tela de perfil para completar o cadastro
-  };
 
-  const handleCancel = () => {
-    setShowModal(false);
-  };
 
   const navigateToProductEditScreen = () => {
     navigation.navigate("ProductEditScreen", {

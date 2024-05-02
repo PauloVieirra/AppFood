@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TextInput, TouchableOpacity, Alert } from "react-native";
+import React, { useEffect, useState,useRef } from "react";
+import { View, Text, FlatList, TextInput, TouchableOpacity, Alert, Animated, Easing } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "../Servers/FirebaseConect";
 import globalStyles from "../src/app/styles";
@@ -14,6 +14,10 @@ const ListFruits = () => {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState('frutas');
   const [activeCategory, setActiveCategory] = useState('frutas');
+  const [searchBarVisible, setSearchBarVisible] = useState(true);
+  const searchBarHeight = useRef(new Animated.Value(50)).current;
+ 
+
 
   useEffect(() => {
     const fetchFruits = async () => {
@@ -76,6 +80,32 @@ const ListFruits = () => {
     fruit.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleScroll = (event) => {
+    const offset = event.nativeEvent.contentOffset.y;
+    const scrollLimit = 300; // Defina o limite de rolagem desejado
+  
+    if (offset <= scrollLimit) {
+      setSearchBarVisible(true);
+      toggleSearchBar(true); // Mostrar a barra de pesquisa
+    } else {
+      setSearchBarVisible(false);
+      toggleSearchBar(false); // Esconder a barra de pesquisa
+    }
+  };
+  
+
+  const toggleSearchBar = (show) => {
+    Animated.timing(
+      searchBarHeight,
+      {
+        toValue: show ? 50 : 0, // Defina a altura final da animação (0 para esconder, 50 para mostrar)
+        duration: 20, // Duração da animação em milissegundos
+        easing: Easing.ease, // Tipo de easing
+        useNativeDriver: false, // Desativar o uso do driver nativo
+      }
+    ).start(); // Iniciar a animação
+  };
+  
   return (
     <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
       <View style={globalStyles.menu_list}>
@@ -104,7 +134,9 @@ const ListFruits = () => {
         </TouchableOpacity>
         <TouchableOpacity onPress={handleManualUpdate}><Ionicons name="cloud-download-outline" size={24} color="black" /></TouchableOpacity>
       </View>
-      <View style={globalStyles.cont_input_search}>
+
+      
+        <Animated.View style={[globalStyles.cont_input_search, { height: searchBarHeight }]}>
         <TextInput
           style={globalStyles.input}
           placeholder="Pesquisar"
@@ -112,7 +144,9 @@ const ListFruits = () => {
           value={searchTerm}
         />
         <AntDesign name="search1" size={24} color="black" />
-      </View>
+      </Animated.View>
+
+      
 
       {loading ? (
         <Loading/>
@@ -134,6 +168,7 @@ const ListFruits = () => {
             />
           )}
           keyExtractor={(item) => item.uid}
+          onScroll={handleScroll}
         />
       )}
     </View>

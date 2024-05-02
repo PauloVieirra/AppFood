@@ -9,7 +9,7 @@ export default Userinfo = () => {
   
   return (
     <View style={styles.constainer}>
-      <View style={styles.userdata}>
+    
         {user.isValidate &&  user.complemento.urlImage ?  (
           <Image
             source={{ uri: user.complemento.urlImage }}
@@ -18,16 +18,7 @@ export default Userinfo = () => {
         ) : (
           <Image source={Imageplaceholder} style={styles.userimg} />
         )}
-
-        <View>
-          <Text style={styles.userdata_title}>Oi, {user.nome}</Text>
-          <Text style={styles.userdata_email}>
-            {" "}
-            {user.complemento.telefone && ` ${user.complemento.telefone}`}
-          </Text>
-        </View>
-      </View>
-      <View style={styles.userdatasec}></View>
+      
     </View>
   );
 };

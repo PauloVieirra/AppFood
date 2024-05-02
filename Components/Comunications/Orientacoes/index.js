@@ -1,9 +1,9 @@
-import React,{useRef, useEffect} from "react";
+import React,{useRef, useEffect, useContext} from "react";
 import { View, Text,TouchableOpacity, Animated } from "react-native";
+import AuthContext from "../../../context/AuthContext";
 import { useNavigation } from "expo-router";
+import { AntDesign } from '@expo/vector-icons';
 import styles from "./style";
-import { Navigate } from "react-router-native";
-// Components/Alertas/Comunication/index.js
 
 const Complite = () => { 
     const navigation = useNavigation();
@@ -52,11 +52,44 @@ const EntregaOn = () => {
     );
   };
 
-  const PagamentoOn = () => { 
+
+
+  const PagamentoInfo = () => { 
+    const navigation = useNavigation();
+    const { handleAlertNoPayment  } = useContext(AuthContext);
+
+      const handleAddPay = () => {
+      navigation.navigate("PaymentScreen");
+    };
+
+    const handleCancel = () => {
+      handleAlertNoPayment(false);
+    };
+
     return (
-      <View>
-        <Text>Pagamento</Text>
+      <View style={styles.container}>
+      <View style={styles.cont_into}>
+        <View style={styles.cont_top}>  
+        <TouchableOpacity style={styles.btn_close} onPress={handleCancel}>
+        <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+        </View>
+        <View style={styles.cont_body}> 
+         <Text style={styles.text_complite}>
+           Precisa adicionar no minimo um meio de pagamento.
+        </Text>
+        </View>
+        <View style={styles.cont_bottom}>
+        <TouchableOpacity style={styles.btn_complite} onPress={handleAddPay}>
+        <Text style={styles.text_btn}>Adicionar</Text>
+        </TouchableOpacity>
+        </View>
+     
+     
+     
       </View>
+      
+    </View>
     );
   };
 
@@ -67,6 +100,6 @@ const EntregaOn = () => {
 
 
 
-export {Complite, EntregaOn, PedidoOn,PagamentoOn};
+export {Complite, EntregaOn, PedidoOn,PagamentoInfo};
 
 

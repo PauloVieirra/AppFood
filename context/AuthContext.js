@@ -16,6 +16,8 @@ export const AuthProvider = ({ children }) => {
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [alertcadastro, setAlertCadastro] = useState(false);
+  const [alertNoPayments, setAlertNoPayments] = useState(false);
+
   const [userType, setUserType] =useState(false);
   
   
@@ -183,18 +185,29 @@ export const AuthProvider = ({ children }) => {
         throw new Error("Precisa estar logado.");
       }
       setLoading(true);
+      
+      // Criar um objeto para armazenar os dados complementares
+      const complementoData = {
+        nome: nome.trim() || null,
+        cidade: cidade.trim() || null,
+        bairro: bairro.trim() || null,
+        telefone: telefone.trim() || null,
+        complemento: complemento.trim() || null,
+        urlImage: imagePro || "", 
+      };
+  
+      // Remover propriedades com valor null do objeto
+      Object.keys(complementoData).forEach(key => {
+        if (complementoData[key] === null) {
+          delete complementoData[key];
+        }
+      });
+  
       // Gravação dos dados do complemento do usuário no Realtime Database 
       await firebase
         .database()
         .ref(`users/${user.uid}/complemento`)
-        .set({
-          nome,
-          cidade,
-          bairro,
-          telefone,
-          complemento,
-          urlImage: imagePro || "", // Se urlImage for null, definir como string vazia
-        });
+        .set(complementoData);
   
       // Atualizar isValidate para true no nó do usuário
       await firebase
@@ -206,33 +219,26 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.setItem('isValidate', 'true');
       
       // Atualizar os dados locais do usuário
-      setUser((prevUser) => ({
+      setUser(prevUser => ({
         ...prevUser,
         isValidate: true,
-        complemento: {
-          nome,
-          cidade,
-          bairro,
-          telefone,
-          complemento,
-          urlImage: imagePro || ""
-        }
+        complemento: complementoData,
       }));
+      
       setLoading(false);
+      
       // Exibir mensagem de sucesso
       Alert.alert("Sucesso", "Seu cadastro está pronto!");
+      
       // Redirecionar para a tela de login
-    
       setAlertCadastro(false);
       navigation.navigate("Home");
     } catch (error) {
       console.error("Erro ao cadastrar:", error);
-      Alert.alert(
-        "Erro",
-        "Ocorreu um erro. Por favor, tente novamente."
-      );
+      Alert.alert("Erro", "Ocorreu um erro. Por favor, tente novamente.");
     }
   };
+  
 
 
   const handleAlertCadastro = () => {
@@ -240,6 +246,14 @@ export const AuthProvider = ({ children }) => {
       setAlertCadastro(true);
     } else {
       setAlertCadastro(false);
+    }
+  };
+
+  const handleAlertNoPayment = () => {
+    if (!alertNoPayments) {
+      setAlertNoPayments(true);
+    } else {
+      setAlertNoPayments(false);
     }
   };
   
@@ -252,9 +266,11 @@ export const AuthProvider = ({ children }) => {
         location,
         address,
         alertcadastro,
+        handleAlertCadastro,
+        alertNoPayments,
+        handleAlertNoPayment,
         userType,
         handleComplite,
-        handleAlertCadastro,
         signInWithEmailAndPassword,
         signUpWithEmailAndPassword,
         signOut,

@@ -68,12 +68,12 @@ const CustomDrawerContent = () => {
             <View style={styles.cont_btn_edit}>
 
               <EvilIcons name="pencil" size={35} color="black" />
-              
+
             </View>
           </View>
           <View style={styles.cont_space} />
           <View style={styles.line}>
-            <Text style={styles.title}>{user.nome}</Text>
+            <Text style={styles.title}> {user.isValidate && user.complemento.nome }</Text>
             <Text style={styles.title}></Text>
           </View>
           <View style={styles.line}>
@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontWeight: "600",
     marginTop: 10,
   },
   label: {

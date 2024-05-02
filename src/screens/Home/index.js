@@ -16,8 +16,6 @@ export default function Home() {
   return (
     <View style={styles.container}>
       <MenuTop />
-      {user.isValidate ? <Personcustomer /> : <Complite />}
-
       <ListFruits tipo="frutas" />
       {alertcadastro === true && <ModalComplite />}
     </View>
