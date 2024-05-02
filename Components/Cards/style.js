@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
  container:{
    width:'100%',
    height:'auto',
-   maxHeight:120,
+   maxHeight:100,
    marginVertical:10,
    flexDirection:'row',
    alignItems:'center',
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
    
  },  
  cont_img:{
-   width:100,
+   width:70,
    height:100,
  },
  cont_data:{
@@ -35,28 +35,28 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
  },
  text_nome:{
-    fontSize:20,
+    fontSize:18,
     fontWeight:'bold',
     color:'#000',
  },
  vt:{
-    fontSize:22,
+    fontSize:18,
     fontWeight:'bold',
     color:"green"
  },
  btn_remover:{
-    width:40,
-    height:40,
+    width:30,
+    height:30,
     alignItems:'center',
     justifyContent:'center',
     borderRadius:24,
-    backgroundColor:'#E85100'
+    backgroundColor:'(rgba(187,187,187,0.6))'
  },
  cont_btncount: {
     flexDirection: "row",
     height: 38,
     borderRadius: 100,
-    backgroundColor: "orange",
+    
     alignItems: "center",
     justifyContent: "center",
   },
@@ -64,8 +64,20 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     justifyContent: "center",
+    borderRadius:20,
     alignItems: "center",
+    backgroundColor: "(rgba(255,191,95,0.5))",
   },
+  cont_quanty:{
+    width:40,
+    height:40,
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  quantity:{
+    fontSize:16,
+    fontWeight:'600',
+  }
 
 
 

@@ -6,8 +6,6 @@ import { useCart } from "../../../context/CartContext"; // Importe o contexto do
 
 const PaymentScreen = () => {
   const route = useRoute();
-  const { totalPrice } = useCart(); // Obtenha o totalPrice do contexto do carrinho
-  console.log(totalPrice);
   const [purchaseAmount, setPurchaseAmount] = useState('');
   const [pixKey, setPixKey] = useState('');
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -41,7 +39,7 @@ const PaymentScreen = () => {
 
       {selectedPayment === 'pix' &&
          <View style={styles.container}>
-         <Text style={styles.title}>{totalPrice}</Text>
+         <Text style={styles.title}></Text>
          <TextInput
            style={styles.input}
            placeholder="Digite o valor da compra"

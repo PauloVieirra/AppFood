@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
 import CartContext from '../../context/CartContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import styles from './style';
 
 const CardCarrinho = ({ image, nome, price, uid, unidade, selectedOption }) => {
@@ -54,7 +54,7 @@ const CardCarrinho = ({ image, nome, price, uid, unidade, selectedOption }) => {
                 <View style={styles.data_a}>
                     <Text style={styles.text_nome}>{nome}</Text>
                     <TouchableOpacity onPress={() => removeFromCart(uid)} style={styles.btn_remover} >
-                        <MaterialCommunityIcons name="trash-can-outline" size={26} color="white" />
+                    <Feather name="x" size={16} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.data_a}>
@@ -67,12 +67,15 @@ const CardCarrinho = ({ image, nome, price, uid, unidade, selectedOption }) => {
                     </View>
                     <View>
                         <View style={styles.cont_btncount}>
-                            <TouchableOpacity style={styles.btn} onPress={handleIncrement}>
-                                <Text> + </Text>
-                            </TouchableOpacity>
-                            <Text style={styles.quantity}>{quantity}</Text>
                             <TouchableOpacity style={styles.btn} onPress={handleDecrement}>
-                                <Text> - </Text>
+                                <Text style={{fontSize:16}}> - </Text>
+                            </TouchableOpacity>
+                            <View style={styles.cont_quanty}>
+                             <Text style={styles.quantity}>{quantity}</Text>   
+                            </View>
+                            
+                            <TouchableOpacity style={styles.btn} onPress={handleIncrement}>
+                                <Text style={{fontSize:16}}> + </Text>
                             </TouchableOpacity>
                         </View>
                     </View>

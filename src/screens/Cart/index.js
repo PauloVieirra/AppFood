@@ -6,18 +6,20 @@ import {
   FlatList,
   Image,
   StyleSheet,
+  Alert
 } from "react-native";
 import { useCart } from "../../../context/CartContext";
 import AuthContext from "../../../context/AuthContext";
 import { useNavigation } from "expo-router";
 import CardCarrinho from "../../../Components/Cards/index";
 import { PagamentoInfo } from "../../../Components/Comunications/Orientacoes";
+import { PixPayment, MoneyPayment, CredtPayment, DebitPayment } from "../../../Components/PaymentsOptions";
 import Goback from "../../../Components/Comunications/Controles";
 
 const Cart = () => {
   const navigation = useNavigation();
-  const { user, alertNoPayments ,handleAlertNoPayment } = useContext(AuthContext);
-  const { cart, removeFromCart, updateCartItem } = useCart();
+  const { user, quantity,alertNoPayments ,handleAlertNoPayment } = useContext(AuthContext);
+  const { cart, updateCartItem,  } = useCart();
   const [groupedCartItems, setGroupedCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -69,8 +71,8 @@ const Cart = () => {
     if (user.tipo === "ADM") {
       console.log('Clicou ADM')
     } else if (user.isValidate) {
-      navigation.navigate('PaymentScreen');
-      
+      navigation.navigate('PaymentScreen', { quantity: quantity });
+      console.log(totalPrice);
     } else {
       // Se o usuário não for válido, exibe um alerta de cadastro
       handlePayType();
@@ -125,10 +127,22 @@ const Cart = () => {
           /> 
 
           
-         
+         <View style={styles.grid}>
+         <View style={styles.gridItem}>
+          <PixPayment/>
+         </View>
+         <View style={styles.gridItem}>
+         <MoneyPayment/>
+         </View>
+         <View style={styles.gridItem}>
+          <CredtPayment/>
+         </View>
+         <View style={styles.gridItem}>
+          <DebitPayment/>
+         </View>
+         </View>
 
           <View style={styles.cont_bottom}>
-          
             <View
               style={{
                 width: "50%",
@@ -237,5 +251,16 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: "600",
     color: "#131313",
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+    paddingVertical:30,
+  },
+  gridItem: {
+    width: '50%', 
+    height: 60, 
+    padding:4,
   },
 });
