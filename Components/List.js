@@ -3,7 +3,7 @@ import { View, Text, FlatList, TextInput, TouchableOpacity, Alert, Animated, Eas
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "../Servers/FirebaseConect";
 import globalStyles from "../src/app/styles";
-import { Loading } from "./Modals";
+import { BuscandoProdutos } from "./Comunications/Loadings";
 import Card from "./Cards";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from '@expo/vector-icons';
@@ -149,7 +149,7 @@ const ListFruits = () => {
       
 
       {loading ? (
-        <Loading/>
+        <BuscandoProdutos/>
       ) : (
         <FlatList
           data={filteredFruits}

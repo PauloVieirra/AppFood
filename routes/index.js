@@ -5,6 +5,7 @@ import AuthRoutes from "./AuthRoutes";
 import AppRoutes from "./AppRoutes";
 import AdmRoutes from "./AdmRoutes"; // Importe a nova rota de administração
 import AuthContext from "../context/AuthContext";
+import { BemVindo } from "../Components/Comunications/Loadings";
 
 function Routes() {
   const { user, loading } = useContext(AuthContext);
@@ -12,9 +13,7 @@ function Routes() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#131313" />
-      </View>
+      <BemVindo/>
     );
   }
 

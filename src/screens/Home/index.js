@@ -8,6 +8,7 @@ import { ModalComplite } from "../../../Components/Modals";
 import Personcustomer from "../../../Components/Personcustomer";
 import { Complite } from "../../../Components/Comunications/Orientacoes";
 import ListFruits from "../../../Components/List";
+import { BuscandoProdutos } from "../../../Components/Comunications/Loadings";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -18,6 +19,7 @@ export default function Home() {
       <MenuTop />
       <ListFruits tipo="frutas" />
       {alertcadastro === true && <ModalComplite />}
+      
     </View>
   );
 }

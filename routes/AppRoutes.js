@@ -111,7 +111,9 @@ function StackNavigator() {
       />
       
     </AppStack.Navigator>
+
     <TabBar/>
+    
    </View>
   );
 }
