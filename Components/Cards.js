@@ -97,7 +97,7 @@ const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade,
             <Image source={{ uri: image }} style={styles.image} />
             <View style={styles.details}>
               <Text style={styles.title}>{nome}</Text>
-              <Text style={styles.curt_descricao}>{curtadescricao}</Text>
+              <Text style={styles.curt_descricao}>{curtadescricao}{id}</Text>
               <View style={styles.row}>
                 <Text style={styles.price}>
                   <Text style={{ color: "#969799", fontWeight: "300" }}>

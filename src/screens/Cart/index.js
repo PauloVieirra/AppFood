@@ -19,6 +19,7 @@ import Goback from "../../../Components/Comunications/Controles";
 const Cart = () => {
   const navigation = useNavigation();
   const { user, quantity,alertNoPayments ,handleAlertNoPayment } = useContext(AuthContext);
+  
   const { cart, updateCartItem,  } = useCart();
   const [groupedCartItems, setGroupedCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -71,8 +72,7 @@ const Cart = () => {
     if (user.tipo === "ADM") {
       console.log('Clicou ADM')
     } else if (user.isValidate) {
-      navigation.navigate('PaymentScreen', { quantity: quantity });
-      console.log(totalPrice);
+      navigation.navigate('PaymentScreen', { cart: groupedCartItems, totalPrice: totalPrice });
     } else {
       // Se o usuário não for válido, exibe um alerta de cadastro
       handlePayType();
@@ -125,22 +125,6 @@ const Cart = () => {
             )}
             keyExtractor={(item) => item.uid.toString()}
           /> 
-
-          
-         <View style={styles.grid}>
-         <View style={styles.gridItem}>
-          <PixPayment/>
-         </View>
-         <View style={styles.gridItem}>
-         <MoneyPayment/>
-         </View>
-         <View style={styles.gridItem}>
-          <CredtPayment/>
-         </View>
-         <View style={styles.gridItem}>
-          <DebitPayment/>
-         </View>
-         </View>
 
           <View style={styles.cont_bottom}>
             <View
