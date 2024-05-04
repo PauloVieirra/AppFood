@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "scheme": "my-player",
     "platforms": ["ios", "android"],
-    "permissions": ["CAMERA", "CAMERA_ROLL"],
+    "permissions": ["CAMERA", "CAMERA_ROLL", "NOTIFICATIONS"],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -31,7 +31,8 @@
         "backgroundColor": "#ffffff",
         "permissions": [
           "ACCESS_COARSE_LOCATION",
-          "ACCESS_FINE_LOCATION"
+          "ACCESS_FINE_LOCATION",
+          "NOTIFICATIONS"
         ]
       },
       "package": "com.vieirajjr.myplayer"

@@ -85,4 +85,6 @@ const CardCarrinho = ({ image, nome, price, uid, unidade, selectedOption }) => {
     );
 };
 
-export default CardCarrinho;
+
+
+export default  CardCarrinho;
