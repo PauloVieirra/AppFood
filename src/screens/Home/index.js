@@ -12,35 +12,25 @@ import ListFruits from "../../../Components/List";
 export default function Home() {
     const navigation = useNavigation();
     const { user, alertcadastro, loading } = useContext(AuthContext);
-    const { triggerNotification } = useNotification();
+    const { triggerNotification, controler } = useNotification();
     const [lastNotificationStatus, setLastNotificationStatus] = useState('');
+    const [orders, setOrders] = useState([]);
 
-    useEffect(() => {
-        const userOrdersRef = firebase.database().ref(`pedidos/${user.uid}`);
-        userOrdersRef.on('value', async (snapshot) => {
-            if (snapshot.exists()) {
-                const ordersData = snapshot.val();
-                const ordersList = Object.values(ordersData);
+   
 
-                ordersList.forEach(order => {
-                    if (order.status !== lastNotificationStatus && order.status !== '') {
-                        triggerNotification(); // Aciona a notificação
-                        setLastNotificationStatus(order.status); // Atualiza o estado para o último status notificado
-                    }
-                });
-            }
-        });
 
-        return () => {
-            userOrdersRef.off();
-        };
-    }, [user, triggerNotification, lastNotificationStatus]);
+
+   
+
+
 
     return (
         <View style={styles.container}>
             <MenuTop />
-            <ListFruits tipo="frutas" />
-            {alertcadastro === true && <ModalComplite />}
+            {user.tipo !== 'ADM' && user.tipo !== 'AGT' &&  <ListFruits tipo="frutas" />}
+            {alertcadastro && <ModalComplite />}
+
+
         </View>
     );
 }

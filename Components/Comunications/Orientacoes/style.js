@@ -6,20 +6,23 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position:'absolute',
+    backgroundColor:"(rgba(0,0,0,0.5))",
     zIndex:100,
-    justifyContent: "center",
+    top:0,
+    left:0,
+    justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: 'rgba(38, 38, 38, 0.8)' // Vermelho com 50% de transparência
+    
     
   },
   cont_into:{
-    width:'80%',
-    height:'40%',
+    width:'100%',
+    height:"auto",
     backgroundColor:'#fff',
-    borderRadius:10,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
+    paddingBottom:6,
     elevation: 5,
     shadowOpacity: 0.8,
     shadowOffset: {
@@ -30,10 +33,8 @@ const styles = StyleSheet.create({
   },
   cont_top:{
     width:'100%',
-    height:48,
-    alignItems:'flex-start',
-    justifyContent:'flex-start',
-    paddingHorizontal:20,
+    height:44,
+    flexDirection:'row-reverse',
   },
   btn_close:{
     width:44,
@@ -42,9 +43,10 @@ const styles = StyleSheet.create({
   },
   cont_body:{
     width:'100%',
-    height:'50%',
-    justifyContent:'center',
-    paddingHorizontal:20
+    height:'auto',
+    flexDirection:'row',
+    justifyContent:'flex-start',
+    alignItems:'flex-start',
   },
   cont_bottom:{
     width:'100%',
@@ -70,10 +72,14 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
+
   },
-  text_complite:{
-    fontSize:20,
-    fontWeight:'700'
+  notify_title:{
+    fontSize:18,
+    fontWeight:'600'
+  },
+  notify_text:{
+    fontSize:14,
   },
   text_btn:{
     color:'#fff',
@@ -100,9 +106,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
-
-  //Laoding
   cont_loader:{
     flex:1,
     width:'100%',
@@ -114,9 +117,15 @@ const styles = StyleSheet.create({
     zIndex:100,
     top:0,
     left:0,
-    
-
-  }
+  },
+  gif:{
+    width: 80, 
+    height:48,            
+  },
+  gifacc:{
+    width: 60, 
+    height:48,            
+  },
   
 });
 

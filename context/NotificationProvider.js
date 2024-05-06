@@ -1,42 +1,54 @@
-import React, { createContext, useState, useContext } from 'react';
-import { Audio } from 'expo-av';
+import React, { createContext, useState } from 'react';
 
 const NotificationContext = createContext();
 
+// No arquivo NotificationService.js
+
 export const NotificationProvider = ({ children }) => {
-    const [sound, setSound] = useState();
+    const [loadingDelivery, setLoadingDelivery] = useState(false);
+    const [lastNotifiedStatus, setLastNotifiedStatus] = useState([]);
+    console.log(lastNotifiedStatus);
 
-    const playNotificationSound = async () => {
-        try {
-            const { sound } = await Audio.Sound.createAsync(
-                require('../Components/Sounds/notifications/pedido.mp3')
-            );
-            setSound(sound);
-            await sound.playAsync();
-        } catch (error) {
-            console.error('Erro ao reproduzir som de notificação:', error);
+    const triggerNotification = (newStatus, newCode) => {
+        if (newCode && newStatus !== lastNotifiedStatus.item.status) {
+            const index = lastNotifiedStatus.findIndex(item => item.code === newCode);
+
+            
+            // Se a notificação para este pedido já existe, atualiza o status
+            if (index !== -1) {
+                setLastNotifiedStatus(prevState => {
+                    const updatedNotifications = [...prevState];
+                    updatedNotifications[index].status = newStatus;
+                    return updatedNotifications;
+                });
+            } else { // Se não, adiciona uma nova notificação
+                setLastNotifiedStatus(prevState => [
+                    ...prevState,
+                    { status: newStatus, code: newCode }
+                ]);
+            }
+
+            setLoadingDelivery(true);
+        } else {
+            console.warn("Código ou status do pedido é indefinido.");
         }
     };
 
-    const stopNotificationSound = async () => {
-        if (sound) {
-            await sound.unloadAsync();
-        }
-    };
-
-    const triggerNotification = () => {
-        playNotificationSound();
+    const clearNotification = () => {
+        setLoadingDelivery(false);
     };
 
     return (
         <NotificationContext.Provider
             value={{
                 triggerNotification,
-                stopNotificationSound
+                clearNotification,
+                loadingDelivery,
+                lastNotifiedStatus,
             }}>
             {children}
         </NotificationContext.Provider>
     );
 };
 
-export const useNotification = () => useContext(NotificationContext);
+export const useNotification = () => React.useContext(NotificationContext);

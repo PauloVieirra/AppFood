@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Text, TextInput, Button, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AuthContext from "../../../context/AuthContext";
@@ -17,15 +17,25 @@ const PaymentScreen = () => {
   const [lote, setLote] = useState("");
   const [numero, setNumero] = useState("");
   const [condominio, setCondominio] = useState("");
+  const [telefone, setTelefone] = useState("")
   const [observacao, setObservacao] = useState("");
   const [typePayment, setTypePayment] = useState("");
   const [troco, setTroco] = useState("");
+  const [status, setStatus] = useState("Aguardando");
   const [uploading, setUploading] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [paymentDetails, setPaymentDetails] = useState(null);
+  const [nome, setNome] = useState();
+  const [contato, setContato] = useState();
   const { user } = useContext(AuthContext);
   const { cart, updateCartItem,  } = useCart();
+  console.log(nome);
+
+  useEffect(() => {
+    setNome(user.complemento.nome);
+    setContato(user.complemento.telefone);
+}, [nome, contato]);
 
 
   const unidadesMedida = [
@@ -57,11 +67,21 @@ const PaymentScreen = () => {
 
   const handleUpload = async (cartItems) => {
     try {
-      console.log("Cart items:", cartItems); // Adiciona esta linha para depurar
+      
   
       const uid = user.uid;
       const pedidoRef = firebase.database().ref(`pedidos/${uid}`).push();
       const pedidoKey = pedidoRef.key;
+  
+      // Função para gerar um código aleatório de 4 dígitos
+      const generateRandomCode = () => {
+        const min = 1000; // Menor número de 4 dígitos (1000)
+        const max = 9999; // Maior número de 4 dígitos (9999)
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      };
+  
+      // Gerar o código aleatório
+      const randomCode = generateRandomCode();
   
       // Verifica se todos os itens do carrinho têm o campo 'uid' definido
       const allItemsHaveUid = cartItems.every(item => item.uid !== undefined);
@@ -77,11 +97,14 @@ const PaymentScreen = () => {
         numero,
         condominio,
         observacao,
+        telefone,
         selectedOption,
         typePayment,
         troco,
+        status,
         showOptions,
         pedidoKey, // Adicionando a chave única do pedido
+        codigo: randomCode, // Adiciona o código aleatório ao pedido
         cart: cartItems, // Adicione os itens do carrinho ao pedido
       });
   
@@ -91,11 +114,13 @@ const PaymentScreen = () => {
       setBairro("");
       setLote("");
       setNumero("");
+      setTelefone("");
       setCondominio("");
       setObservacao("");
       setSelectedOption("");
       setTypePayment(""); 
       setTroco("");
+      setStatus("");
       setShowOptions("");
       setStep(1); 
     } catch (error) {
@@ -103,6 +128,7 @@ const PaymentScreen = () => {
       Alert.alert("Erro", "Ocorreu um erro ao enviar o pedido. Por favor, tente novamente.");
     }
   };
+  
   
   
   
@@ -119,6 +145,8 @@ const PaymentScreen = () => {
     completedProgressBarColor: "#0a0d64",
     completedCheckColor: "white",
   };
+
+ 
 
   return (
     <View style={{ flex: 1 }}>
@@ -269,6 +297,18 @@ const PaymentScreen = () => {
                   borderColor: "#ccc",
                   borderRadius: 5,
                 }}
+                placeholder="numero"
+                value={numero}
+                onChangeText={setNumero}
+              />
+              <TextInput
+                style={{
+                  marginBottom: 10,
+                  padding: 10,
+                  borderWidth: 1,
+                  borderColor: "#ccc",
+                  borderRadius: 5,
+                }}
                 placeholder="Condominio"
                 value={condominio}
                 onChangeText={setCondominio}
@@ -294,9 +334,9 @@ const PaymentScreen = () => {
                   borderColor: "#ccc",
                   borderRadius: 5,
                 }}
-                placeholder="numero"
-                value={numero}
-                onChangeText={setNumero}
+                placeholder="telefone"
+                value={telefone}
+                onChangeText={setTelefone}
               />
               <View>
               <View  style={{

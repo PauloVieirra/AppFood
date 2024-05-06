@@ -116,8 +116,8 @@ const CustomDrawerContent = () => {
 
         <TouchableOpacity
           style={styles.btnsmenu}
-          onPress={() => handleNavigate("ProfileCad")}>
-          <Text style={styles.drawerItem}>Atualizar dados</Text>
+          onPress={() => handleNavigate("CadStore")}>
+          <Text style={styles.drawerItem}>Nova Loja</Text>
         </TouchableOpacity>
 
 

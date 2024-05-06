@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
 import TabBar from "../Components/Tab";
+import AgenteRoutes from "./AgenteRoutes";
 import AuthRoutes from "./AuthRoutes";
 import AppRoutes from "./AppRoutes";
 import AdmRoutes from "./AdmRoutes"; // Importe a nova rota de administração
@@ -9,7 +10,7 @@ import { BemVindo } from "../Components/Comunications/Loadings";
 
 function Routes() {
   const { user, loading } = useContext(AuthContext);
- 
+  console.disableYellowBox = true;
 
   if (loading) {
     return (
@@ -25,6 +26,10 @@ function Routes() {
   // Verifica se o usuário é do tipo ADM
   if (user.tipo === "ADM") {
     return <AdmRoutes />;
+  }
+   // Verifica se o usuário é do tipo ADM
+   if (user.tipo === "AGT") {
+    return <AgenteRoutes />;
   }
 
   // Se não for ADM, renderiza as rotas de usuário normal
