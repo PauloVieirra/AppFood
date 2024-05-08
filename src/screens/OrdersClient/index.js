@@ -67,7 +67,7 @@ useEffect(() => {
         return (
             <>
             <View style={styles.card}>
-                <Text>{user.complemento.nome}</Text>
+                <Text>{user.complemento.nome }</Text>
                 <Text>Codigo: {order.codigo}</Text>
                 <Text>{user.complemento.telefone}</Text>
                 <Text>{order.cidade}{','} {order.bairro}{','} {order.numero}</Text>

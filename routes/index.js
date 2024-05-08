@@ -1,10 +1,8 @@
 import React, { useContext, useEffect } from "react";
-import { View, ActivityIndicator } from "react-native";
-import TabBar from "../Components/Tab";
 import AgenteRoutes from "./AgenteRoutes";
 import AuthRoutes from "./AuthRoutes";
 import AppRoutes from "./AppRoutes";
-import AdmRoutes from "./AdmRoutes"; // Importe a nova rota de administração
+import AdmRoutes from "./AdmRoutes"; 
 import AuthContext from "../context/AuthContext";
 import { BemVindo } from "../Components/Comunications/Loadings";
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -11,12 +11,14 @@ import {
 } from "react-native";
 import styles from "./style";
 import { useNavigation } from "@react-navigation/native";
+import AuthContext from "../../../context/AuthContext";
 import firebase from "../../../Servers/FirebaseConect";
 import * as ImagePicker from "expo-image-picker";
 import { Entypo } from "@expo/vector-icons";
 import { ProgressStep, ProgressSteps } from "react-native-progress-steps";
 
-const Register = ({ user }) => {
+const Register = () => {
+  const { user} = useContext(AuthContext);
   const navigation = useNavigation();
   const [step, setStep] = useState(1);
   const [nome, setNome] = useState("");
@@ -31,7 +33,7 @@ const Register = ({ user }) => {
   const [unidade, setUnidade] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  console.log(selectedOption);
+  console.log(user.complemento);
 
   const unidadesMedida = [
     { label: "Quilograma (kg)", value: "kg" },
@@ -116,10 +118,12 @@ const Register = ({ user }) => {
         throw new Error("Selecione uma categoria antes de enviar.");
       }
 
+      const storePath = `${user.complemento.cidade}/${user.uid}`;
+
       // Gravação dos dados do produto no Realtime Database com uma chave única e URL da imagem
       const newProductRef = await firebase
         .database()
-        .ref(`produtos/${category}`)
+        .ref(`lojas/${storePath}/produtos/${category}`)
         .push(); // Gera uma nova chave única para o produto
       const productId = newProductRef.key; // Obtém o ID único gerado
       await newProductRef.set({
@@ -260,7 +264,7 @@ const Register = ({ user }) => {
             ) : (
               <Button
                 title="Sair"
-                onPress={() => navigation.navigate("Home")}
+                onPress={() => navigation.navigate("HomeAdmPage")}
               />
             )}
 

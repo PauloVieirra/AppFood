@@ -1,6 +1,7 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState,useRef, useContext } from "react";
 import { View, Text, FlatList, TextInput, TouchableOpacity, Alert, Animated, Easing } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AuthContext from "../context/AuthContext";
 import firebase from "../Servers/FirebaseConect";
 import globalStyles from "../src/app/styles";
 import { BuscandoProdutos } from "./Comunications/Loadings";
@@ -9,6 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from '@expo/vector-icons';
 
 const ListFruits = () => {
+  const {user, address} = useContext(AuthContext);
   const [fruits, setFruits] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -17,42 +19,71 @@ const ListFruits = () => {
   const [searchBarVisible, setSearchBarVisible] = useState(true);
   const searchBarHeight = useRef(new Animated.Value(50)).current;
  
+   console.log(user.complemento.cidade);
 
-
-  useEffect(() => {
-    const fetchFruits = async () => {
+   useEffect(() => {
+    const fetchProducts = async () => {
       setLoading(true);
       try {
-        // Adicionar listener para ouvir mudanças no banco de dados Firebase
-        const databaseRef = firebase.database().ref(`produtos/${category}`);
-        databaseRef.on('value', (snapshot) => {
-          const fruitsData = snapshot.val();
-          if (fruitsData) {
-            const fruitsArray = Object.entries(fruitsData).map(
-              ([uid, fruit]) => ({
-                uid,
-                ...fruit,
-              })
-            );
-            setFruits(fruitsArray);
-            // Salvar os dados localmente
-            AsyncStorage.setItem('products', JSON.stringify(fruitsArray));
+        let databaseRef;
+        if (user.complemento && user.complemento.cidade) {
+          const storePath = `${user.complemento.cidade}`;
+          databaseRef = firebase.database().ref(`lojas/${storePath}`);
+        } else {
+          databaseRef = firebase.database().ref(`lojas`);
+        }
+        databaseRef.on("value", (snapshot) => {
+          const productsData = snapshot.val();
+          if (productsData) {
+            let allProducts = [];
+            if (Array.isArray(productsData)) {
+              // Se a resposta é um array, iterar sobre os nós
+              productsData.forEach((store) => {
+                if (store.produtos && store.produtos[category]) {
+                  const storeProducts = Object.values(store.produtos[category]);
+                  allProducts = [...allProducts, ...storeProducts];
+                }
+              });
+            } else {
+              // Se a resposta é um objeto, iterar sobre as chaves (UIDs das lojas)
+              Object.entries(productsData).forEach(([storeUid, store]) => {
+                if (store.produtos && store.produtos[category]) {
+                  const storeProducts = Object.values(store.produtos[category]);
+                  allProducts = [...allProducts, ...storeProducts];
+                }
+              });
+            }
+            setFruits(allProducts);
+            AsyncStorage.setItem("products", JSON.stringify(allProducts));
+          } else {
+            setFruits([]);
+            AsyncStorage.setItem("products", JSON.stringify([]));
           }
           setLoading(false);
         });
       } catch (error) {
-        console.error("Erro ao buscar frutas:", error);
+        console.error("Erro ao buscar produtos:", error);
         setLoading(false);
       }
     };
-
-    fetchFruits();
-
-    // Remover o listener quando o componente é desmontado
+  
+    fetchProducts();
+  
     return () => {
-      firebase.database().ref(`produtos/${category}`).off();
+      // Remover o listener quando o componente é desmontado
+      if (user.complemento && user.complemento.cidade) {
+        const storePath = `${user.complemento.cidade}/${user.uid}`;
+        firebase.database().ref(`lojas/${storePath}/produtos/${category}`).off();
+      } else {
+        firebase.database().ref(`lojas`).off();
+      }
     };
-  }, [category]); // Executar o efeito apenas quando a categoria é alterada
+  }, [user.complemento.cidade, category]);
+  
+  
+  
+  
+   
 
   const handleManualUpdate = async () => {
     setLoading(true);

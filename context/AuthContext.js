@@ -17,13 +17,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [alertcadastro, setAlertCadastro] = useState(false);
   const [alertNoPayments, setAlertNoPayments] = useState(false);
-
   const [userType, setUserType] =useState(false);
   
   
-  
-
-
   useEffect(() => {
     const checkUserLoggedIn = async () => {
       try {
@@ -84,15 +80,16 @@ export const AuthProvider = ({ children }) => {
         Alert.alert('Permissão de localização não concedida');
         return;
       }
-
+  
       let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      reverseGeocode(location.coords.latitude, location.coords.longitude);
+      const { latitude, longitude } = location.coords;
+      setLocation({ latitude, longitude }); // Salvando as coordenadas
+      reverseGeocode(latitude, longitude);
     } catch (error) {
       console.error('Erro ao obter a localização:', error);
     }
   };
-
+  
   const reverseGeocode = async (latitude, longitude) => {
     try {
       const response = await axios.get(
@@ -164,6 +161,49 @@ export const AuthProvider = ({ children }) => {
       console.error("Sign up error:", error);
     }
   };
+
+  const signUpWithEmailAndPasswordAdm = async (
+        nome,
+        email,
+        password,
+        telefone,
+        nomecomercial,
+        cnpj,
+        urlImage,
+        isValidate,
+        tipo,
+        userRole
+  ) => {
+    try {
+      const userCredential = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+
+      const user = userCredential.user;
+
+      if (user) {
+        // Registra os detalhes do usuário no banco de dados em tempo real
+        await firebase.database().ref(`users/${user.uid}`).set({
+          nome: nome,
+          email: user.email,
+          uid: user.uid,
+          telefone:telefone,
+          nomecomercial:nomecomercial,
+          tipo: tipo,
+          cnpj:cnpj,
+          urlImage: urlImage,
+          isValidate: isValidate,
+          userRole:userRole
+        });
+       
+      } else {
+        console.error("Usuário não definido ao criar a conta");
+      }
+    } catch (error) {
+      console.error("Sign up error:", error);
+    }
+  };
+
 
   const signOut = async () => {
     try {
@@ -238,6 +278,120 @@ export const AuthProvider = ({ children }) => {
       Alert.alert("Erro", "Ocorreu um erro. Por favor, tente novamente.");
     }
   };
+
+  const handleCompliteAdm = async (nome, estado,cidade, bairro, rua,numero, cep, imagePro) => {
+    try {
+      // Verificar se o usuário está logado
+      if (!user) {
+        throw new Error("Precisa estar logado.");
+      }
+      setLoading(true);
+      
+      // Criar um objeto para armazenar os dados complementares
+      const complementoData = {
+        nome: nome.trim() || null,
+        estado: estado.trim() || null,
+        cidade: cidade.trim() || null,
+        bairro: bairro.trim() || null,
+        rua: rua.trim() || null,
+        numero: numero.trim() || null,
+        cep: cep.trim() || null,
+        urlImage: imagePro || "",
+      };
+  
+      // Remover propriedades com valor null do objeto
+      Object.keys(complementoData).forEach(key => {
+        if (complementoData[key] === null) {
+          delete complementoData[key];
+        }
+      });
+  
+      // Gravação dos dados do complemento do usuário no Realtime Database 
+      await firebase
+        .database()
+        .ref(`users/${user.uid}/complemento`)
+        .set(complementoData);
+  
+      // Atualizar isValidate para true no nó do usuário
+      await firebase
+        .database()
+        .ref(`users/${user.uid}`)
+        .update({ isValidate: true });
+  
+      // Atualizar isValidate no AsyncStorage
+      await AsyncStorage.setItem('isValidate', 'true');
+      
+      // Atualizar os dados locais do usuário
+      setUser(prevUser => ({
+        ...prevUser,
+        isValidate: true,
+        complemento: complementoData,
+      }));
+      
+      setLoading(false);
+      
+      // Exibir mensagem de sucesso
+      Alert.alert("Sucesso", "Seu cadastro está pronto!");
+      
+      // Redirecionar para a tela de login
+      setAlertCadastro(false);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Erro ao cadastrar:", error);
+      Alert.alert("Erro", "Ocorreu um erro. Por favor, tente novamente.");
+    }
+  };
+
+  const handleNewStore = async (nome, estado, cidade, bairro, rua, numero, cep) => {
+    try {
+      // Verificar se o usuário está logado
+      if (!user) {
+        throw new Error("Precisa estar logado.");
+      }
+      setLoading(true);
+      
+      // Criar um objeto para armazenar os dados da loja
+      const lojaData = {
+        nome: nome.trim() || null,
+        estado: estado.trim() || null,
+        cidade: cidade.trim() || null,
+        bairro: bairro.trim() || null,
+        rua: rua.trim() || null,
+        numero: numero.trim() || null,
+        cep: cep.trim() || null,
+        produtos: {}, // Sub-nó para armazenar os produtos
+      };
+  
+      // Remover propriedades com valor null do objeto
+      Object.keys(lojaData).forEach(key => {
+        if (lojaData[key] === null) {
+          delete lojaData[key];
+        }
+      });
+  
+      // Concatenar cidade e uid para definir o caminho da loja
+      const storePath = `${user.complemento.cidade}/${user.uid}`;
+      console.log(storePath);
+      // Gravação dos dados da loja no Realtime Database 
+      await firebase
+        .database()
+        .ref(`lojas/${storePath}`)
+        .set(lojaData);
+  
+      setLoading(false);
+      
+      // Exibir mensagem de sucesso
+      Alert.alert("Sucesso", "Sua loja foi criada com sucesso!");
+      
+      // Redirecionar para a tela de home (ou onde quer que seja necessário)
+      // navigation.navigate("Home");
+    } catch (error) {
+      console.error("Erro ao cadastrar a loja:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao criar a loja. Por favor, tente novamente.");
+    }
+  };
+  
+  
   
 
 
@@ -256,6 +410,9 @@ export const AuthProvider = ({ children }) => {
       setAlertNoPayments(false);
     }
   };
+
+ 
+  
   
 
   return (
@@ -270,9 +427,12 @@ export const AuthProvider = ({ children }) => {
         alertNoPayments,
         handleAlertNoPayment,
         userType,
+        handleNewStore,
         handleComplite,
+        handleCompliteAdm,
         signInWithEmailAndPassword,
         signUpWithEmailAndPassword,
+        signUpWithEmailAndPasswordAdm,
         signOut,
       }}
     >

@@ -21,15 +21,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         paddingLeft: 10,
       },
-      inputPicker: {
-        width: '100%',
-        height: 40,
-        justifyContent:'center',
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        marginBottom: 10,
-      },
 
   cont_into:{
     width:'80%',

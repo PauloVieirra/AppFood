@@ -1,14 +1,11 @@
 import React,{useContext} from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import Home from '../src/screens/Home/index';
-import DetalhesProduto from "../src/screens/Details";
 import Register from "../src/screens/Register";
 import ProfileAdm from "../src/screens/Admcomplite";
 import HomeAgentePage from "../src/screens/HomeAgente";
 import CadStore from "../src/screens/NewStore";
 import { Complite } from "../Components/Comunications/Orientacoes";
-import ProductEditScreen from "../src/screens/ProctEditScreen";
 import { CartProvider } from "../context/CartContext";
 import CustomDrawerContent from "../Components/CunstonDraqer";
 
@@ -41,24 +38,17 @@ function AgenteRoutes(){
 function StackNavigator() {
   return (
       <AppStack.Navigator>
-          <AppStack.Screen 
-              name="Home" 
-              component={Home}
+         <AppStack.Screen 
+              name="HomeAgentePage" 
+              component={HomeAgentePage}
               options={{
                   headerShown: false,
               }}
           />
-            <AppStack.Screen 
-              name="DetalhesProduto" 
-              path="/detalhes/:id"
-              component={DetalhesProduto}
-              options={{
-                  headerShown: false,
-              }}
-          />
+           
            <AppStack.Screen 
-              name="Register" 
-              component={Register}
+              name="CadStore" 
+              component={CadStore}
               options={{
                   headerShown: false,
               }}
@@ -77,13 +67,7 @@ function StackNavigator() {
                   headerShown: false,
               }}
           />
-           <AppStack.Screen 
-              name="HomeAgentePage" 
-              component={HomeAgentePage}
-              options={{
-                  headerShown: false,
-              }}
-          />
+          
       </AppStack.Navigator>
   );
 }

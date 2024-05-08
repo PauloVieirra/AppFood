@@ -16,16 +16,12 @@ import Imageplaceholder from "../../assets/personimg.png";
 const CustomDrawerContent = () => {
   const navigation = useNavigation();
   const { signOut, user, userType } = useContext(AuthContext);
- console.log(userType);
-
-
-
+  console.log(userType);
 
   const handleNavigate = (screen) => {
     navigation.navigate(screen);
   };
 
- 
   const handleOut = async () => {
     Alert.alert(
       "Você será desconectado!",
@@ -52,28 +48,25 @@ const CustomDrawerContent = () => {
         <View style={styles.container}>
           <View style={styles.cont_sup} />
           <View style={styles.cont_image}>
-
             {user.isValidate && user.complemento.urlImage ? (
               <Image
                 source={{ uri: user.complemento.urlImage }}
                 style={styles.image}
               />
-
             ) : (
-
               <Image source={Imageplaceholder} style={styles.image} />
-
             )}
 
             <View style={styles.cont_btn_edit}>
-
               <EvilIcons name="pencil" size={35} color="black" />
-
             </View>
           </View>
           <View style={styles.cont_space} />
           <View style={styles.line}>
-            <Text style={styles.title}> {user.isValidate && user.complemento.nome }</Text>
+            <Text style={styles.title}>
+              {" "}
+              {user.isValidate && user.complemento.nome}
+            </Text>
             <Text style={styles.title}></Text>
           </View>
           <View style={styles.line}>
@@ -89,40 +82,49 @@ const CustomDrawerContent = () => {
             <Text style={styles.value}>$1,234.56</Text>
           </View>
         </View>
+         {!user.tipo &&
+             <TouchableOpacity
+              style={styles.btnsmenu}
+              onPress={() => handleNavigate("ProfileCad")}
+            >
+              <Text style={styles.drawerItem}>Atualizar dados</Text>
+            </TouchableOpacity>
+         }
+         
 
         {user.tipo === "ADM" && (
           <>
+            <TouchableOpacity
+              style={styles.btnsmenu}
+              onPress={() => handleNavigate("Register")}
+            >
+              <Text style={styles.drawerItem}>Cadastar produtos</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.btnsmenu}
+              onPress={() => handleNavigate("ProfileAdm")}
+            >
+              <Text style={styles.drawerItem}>Atualizar dados</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btnsmenu}
+              onPress={() => handleNavigate("CadNewStore")}
+            >
+              <Text style={styles.drawerItem}>Criar Loja</Text>
+            </TouchableOpacity>
+          </>
+        )}
+        {user.tipo === "AGT" && (
           <TouchableOpacity
             style={styles.btnsmenu}
-            onPress={() => handleNavigate("Register")}
+            onPress={() => handleNavigate("CadStore")}
           >
-            <Text style={styles.drawerItem}>Cadastar produtos</Text>
+            <Text style={styles.drawerItem}>Novo{'(a)'} Logista</Text>
           </TouchableOpacity>
-
-           <TouchableOpacity
-           style={styles.btnsmenu}
-           onPress={() => handleNavigate("ProfileAdm")}>
-           <Text style={styles.drawerItem}>Atualizar dados</Text>
-           </TouchableOpacity>
-
-           <TouchableOpacity
-           style={styles.btnsmenu}
-           onPress={() => handleNavigate("ProductEditScreen")}>
-           <Text style={styles.drawerItem}>Atualizar dados</Text>
-           </TouchableOpacity>
-
-         </>
         )}
-
-        <TouchableOpacity
-          style={styles.btnsmenu}
-          onPress={() => handleNavigate("CadStore")}>
-          <Text style={styles.drawerItem}>Nova Loja</Text>
-        </TouchableOpacity>
-
-
       </ScrollView>
-      <View>
+      <View style={{ height:56, justifyContent:'center', alignItems:'center'}}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleOut}>
           <Text style={styles.logoutText}>Sair</Text>
         </TouchableOpacity>
@@ -178,10 +180,10 @@ const styles = StyleSheet.create({
     // Sombra para iOS
     shadowColor: "#000", // cor da sombra
     shadowOffset: {
-      width: 5,
-      height: 10,
+      width: 2,
+      height: 6,
     },
-    shadowOpacity: 0.9, // opacidade da sombra
+    shadowOpacity: 0.2, // opacidade da sombra
     shadowRadius: 3.84, // raio da sombra
   },
 
@@ -207,10 +209,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   logoutButton: {
-    padding: 10,
+    width: "100%",
+    height: 56,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    flexDirection: "row",
     paddingHorizontal: 20,
-    alignItems: "flex-start",
-    marginTop: "100%",
   },
   logoutText: {
     color: "#131313",
@@ -241,10 +245,10 @@ const styles = StyleSheet.create({
     // Sombra para iOS
     shadowColor: "#000", // cor da sombra
     shadowOffset: {
-      width: 5,
-      height: 10,
+      width: 2,
+      height: 6,
     },
-    shadowOpacity: 0.9, // opacidade da sombra
+    shadowOpacity: 0.2, // opacidade da sombra
     shadowRadius: 3.84, // raio da sombra
   },
 });

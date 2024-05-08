@@ -7,8 +7,9 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "scheme": "my-player",
-    "platforms": ["ios", "android"],
-    "permissions": ["CAMERA", "CAMERA_ROLL", "NOTIFICATIONS"],
+    "platforms": ["ios", "android","web"],
+    "permissions": ["CAMERA", "CAMERA_ROLL", "NOTIFICATIONS","ACCESS_COARSE_LOCATION",
+    "ACCESS_FINE_LOCATION"],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

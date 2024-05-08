@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,21 +14,53 @@ import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "expo-router";
 import firebase from "../../../Servers/FirebaseConect";
+import RNPickerSelect from "react-native-picker-select";
 import AuthContext from "../../../context/AuthContext";
 import ImagePlaceholder from "../../../assets/personimg.png";
 import styles from "./style";
 
 const ProfileAdm = () => {
   const navigation = useNavigation();
-  const { handleComplite, user } = useContext(AuthContext);
+  const { handleCompliteAdm, user } = useContext(AuthContext);
   const [nome, setNome] = useState("");
+  const [estado, setEstatdo] = useState("");
   const [cidade, setCidade] = useState("");
   const [bairro, setBairro] = useState("");
-  const [telefone, setTelefone] = useState(null);
-  const [complemento, setComplemento] = useState("");
+  const [rua, setRua] = useState("");
+  const [numero, setNumero] = useState(null);
+  const [cep, setCep] = useState("");
   const [imagePro, setImagePro] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [urlImage, setUrlImage] = useState(null);
+
+  const cidadesSatelites = [
+    { id: 25, label: "Águas Claras", value: "aguasclaras" },
+    { id: 1, label: "Brasília", value: "brasilia" },
+    { id: 2, label: "Brazlândia", value: "brazlandia" },
+    { id: 3, label: "Candangolândia", value: "candangolandia" },
+    { id: 4, label: "Ceilândia", value: "ceilandia" },
+    { id: 5, label: "Cruzeiro", value: "cruzeiro" },
+    { id: 6, label: "Gama", value: "gama" },
+    { id: 7, label: "Guará", value: "guara" },
+    { id: 8, label: "Lago Norte", value: "lago_norte" },
+    { id: 9, label: "Lago Sul", value: "lago_sul" },
+    { id: 10, label: "Núcleo Bandeirante", value: "nucleo_bandeirante" },
+    { id: 11, label: "Paranoá", value: "paranoa" },
+    { id: 12, label: "Park Way", value: "park_way" },
+    { id: 13, label: "Planaltina", value: "planaltina" },
+    { id: 14, label: "Recanto das Emas", value: "recanto_das_emas" },
+    { id: 15, label: "Riacho Fundo", value: "riacho_fundo" },
+    { id: 16, label: "Samambaia", value: "samambaia" },
+    { id: 17, label: "Santa Maria", value: "santa_maria" },
+    { id: 18, label: "São Sebastião", value: "sao_sebastiao" },
+    { id: 19, label: "SCIA", value: "scia" },
+    { id: 20, label: "Sobradinho", value: "sobradinho" },
+    { id: 21, label: "Sudoeste e Octogonal", value: "sudoeste_e_octogonal" },
+    { id: 22, label: "Taguatinga", value: "taguatinga" },
+    { id: 23, label: "Varjão", value: "varjao" },
+    { id: 24, label: "Vicente Pires", value: "vicente_pires" },
+  ];
+  
+ 
 
   const pickImage = async () => {
     let permissionResult =
@@ -105,9 +137,11 @@ const ProfileAdm = () => {
   };
 
   const handleRegister = () => {
-    handleComplite(nome, cidade, bairro, telefone, complemento, imagePro);
+    handleCompliteAdm(nome, estado,cidade,bairro,rua,numero,cep,imagePro );
   };
- 
+  
+  
+  
 
   return (
     <>
@@ -121,7 +155,7 @@ const ProfileAdm = () => {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.cont_top}>
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity onPress={() => navigation.navigate("HomeAdmPage")}>
             <AntDesign name="arrowleft" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -153,34 +187,43 @@ const ProfileAdm = () => {
           <Text style={styles.title}>Cadastro de Perfil ADM</Text>
           <TextInput
             style={styles.input}
-            placeholder="Nome Completo"
+            placeholder="Nome Comercial"
             value={nome}
             onChangeText={setNome}
           />
           <TextInput
             style={styles.input}
-            placeholder="Endereço"
-            value={cidade}
-            onChangeText={setCidade}
+            placeholder="Estado"
+            value={estado}
+            onChangeText={setEstatdo}
           />
+         <View style={styles.inputPicker}>
+            <RNPickerSelect
+              onValueChange={(value) => setCidade(value)}
+              items={cidadesSatelites}
+              value={cidade}
+              placeholder={{ label: "Selecione a cidade", value: null }}
+            />
+            </View>
           <TextInput
             style={styles.input}
-            placeholder="Cidade"
-            value={bairro}
-            onChangeText={setBairro}
+            placeholder="Rua"
+            value={rua}
+            onChangeText={setRua}
           />
+        
           <TextInput
             style={styles.input}
-            placeholder="Número de Telefone"
+            placeholder="Número"
             keyboardType="numeric"
-            value={telefone}
-            onChangeText={setTelefone}
+            value={numero}
+            onChangeText={setNumero}
           />
           <TextInput
             style={styles.input}
-            placeholder="Complemento"
-            value={complemento}
-            onChangeText={setComplemento}
+            placeholder="CEP"
+            value={cep}
+            onChangeText={setCep}
           />
         </View>
       </ScrollView>
@@ -189,11 +232,6 @@ const ProfileAdm = () => {
           title="Registrar"
           onPress={handleUploadImageAndRegister}
           disabled={
-            !nome ||
-            !cidade ||
-            !bairro ||
-            !telefone ||
-            !complemento ||
             !imagePro
           }
         />

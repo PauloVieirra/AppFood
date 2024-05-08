@@ -7,6 +7,7 @@ const NotificationContext = createContext();
 export const NotificationProvider = ({ children }) => {
     const [loadingDelivery, setLoadingDelivery] = useState(false);
     const [lastNotifiedStatus, setLastNotifiedStatus] = useState([]);
+  const [showCadNotification, setShowCadNotification] = useState(false);
     console.log(lastNotifiedStatus);
 
     const triggerNotification = (newStatus, newCode) => {
@@ -38,13 +39,19 @@ export const NotificationProvider = ({ children }) => {
         setLoadingDelivery(false);
     };
 
+    const handleShowsCadNotifications = () => {
+        setShowCadNotification(!showCadNotification);
+      }
+
     return (
         <NotificationContext.Provider
             value={{
                 triggerNotification,
                 clearNotification,
+                handleShowsCadNotifications,
                 loadingDelivery,
                 lastNotifiedStatus,
+
             }}>
             {children}
         </NotificationContext.Provider>
