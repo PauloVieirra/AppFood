@@ -30,7 +30,7 @@ const ListFruits = () => {
           const storePath = `${user.complemento.cidade}`;
           databaseRef = firebase.database().ref(`lojas/${storePath}`);
         } else {
-          databaseRef = firebase.database().ref(`lojas`);
+          databaseRef = firebase.database().ref(`lojas/aguasclaras`);
         }
         databaseRef.on("value", (snapshot) => {
           const productsData = snapshot.val();
