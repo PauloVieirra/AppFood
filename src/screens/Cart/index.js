@@ -23,6 +23,8 @@ const Cart = () => {
   const { cart, updateCartItem,  } = useCart();
   const [groupedCartItems, setGroupedCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+   console.log(cart);
+
 
   const handlePayType = () => {
         handleAlertNoPayment(true);
@@ -120,10 +122,11 @@ const Cart = () => {
                   curtadescricao={item.curtadescricao}
                   uid={item.uid}
                   onUpdateCartItem={handleUpdateCartItem}
+                  identify={item.identify}
                 />
               </View>
             )}
-            keyExtractor={(item) => item.uid.toString()}
+            keyExtractor={(item) => item.id.toString()}
           /> 
 
           <View style={styles.cont_bottom}>

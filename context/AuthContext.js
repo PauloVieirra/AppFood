@@ -40,23 +40,37 @@ export const AuthProvider = ({ children }) => {
       .auth()
       .onAuthStateChanged(async (firebaseUser) => {
         if (firebaseUser) {
-          setUser(firebaseUser);
           try {
-            await AsyncStorage.setItem(
-              "Auth_user",
-              JSON.stringify(firebaseUser)
-            );
-  
             // Busca os detalhes do usuário no banco de dados em tempo real
             const userRef = firebase
               .database()
               .ref(`users/${firebaseUser.uid}`);
-            userRef.once("value", (snapshot) => {
+            userRef.once("value", async (snapshot) => {
               const userData = snapshot.val();
-              setUser((prevUser) => ({ ...prevUser, ...userData }));
+              if (userData) {
+                // Busca os detalhes adicionais no nó "complemento"
+                const complementRef = firebase
+                  .database()
+                  .ref(`complement/${firebaseUser.uid}`);
+                complementRef.once("value", (complementSnapshot) => {
+                  const complementData = complementSnapshot.val();
+                  setUser({
+                    ...userData,
+                    complement: complementData // Adiciona os dados do complemento ao usuário
+                  });
+                  // Salva os dados do usuário incluindo os do complemento no AsyncStorage
+                  AsyncStorage.setItem(
+                    "Auth_user",
+                    JSON.stringify({
+                      ...userData,
+                      complement: complementData
+                    })
+                  );
+                });
+              }
             });
           } catch (error) {
-            console.error("Error saving user data:", error);
+            console.error("Error retrieving user data:", error);
           }
         } else {
           setUser(null);
@@ -66,12 +80,10 @@ export const AuthProvider = ({ children }) => {
     // Cleanup function to unsubscribe from the listener
     return () => unsubscribe();
   }, []);
-
+  
   useEffect(() =>{
     getLocation();
   },[]);
-
-  
 
   const getLocation = async () => {
     try {
@@ -335,7 +347,7 @@ export const AuthProvider = ({ children }) => {
       
       // Redirecionar para a tela de login
       setAlertCadastro(false);
-      navigation.navigate("Home");
+      navigation.navigate("HomeAdmPage");
     } catch (error) {
       console.error("Erro ao cadastrar:", error);
       Alert.alert("Erro", "Ocorreu um erro. Por favor, tente novamente.");
@@ -391,10 +403,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  
-  
-
-
   const handleAlertCadastro = () => {
     if (!alertcadastro) {
       setAlertCadastro(true);

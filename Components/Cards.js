@@ -12,11 +12,12 @@ import AuthContext from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import globalStyles from "../src/app/styles";
 
-const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade, selectedOption }) => {
+const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade, selectedOption, identify }) => {
   const navigation = useNavigation();
   const { addToCart } = useCart();
   const { user, handleAlertCadastro } = useContext(AuthContext);
   const [quantity, setQuantity] = useState(1);
+ 
 
   const handleAddToCart = () => {
     addToCart({
@@ -31,6 +32,7 @@ const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade,
       price,
       unidade,
       selectedOption,
+      identify,
     });
   };
 
@@ -60,6 +62,7 @@ const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade,
         price,
         unidade,
         selectedOption,
+        identify,
       },
     });
   }
@@ -79,6 +82,7 @@ const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade,
         price,
         unidade,
         selectedOption,
+        identify,
       },
     });
   };

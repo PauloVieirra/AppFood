@@ -16,7 +16,7 @@ import Imageplaceholder from "../../assets/personimg.png";
 const CustomDrawerContent = () => {
   const navigation = useNavigation();
   const { signOut, user, userType } = useContext(AuthContext);
-  console.log(userType);
+  console.log(user.complemento.urlImage);
 
   const handleNavigate = (screen) => {
     navigation.navigate(screen);
@@ -42,13 +42,14 @@ const CustomDrawerContent = () => {
     );
   };
 
+
   return (
     <>
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.cont_sup} />
           <View style={styles.cont_image}>
-            {user.isValidate && user.complemento.urlImage ? (
+            {user.isValidate && user.complemento && user.complemento.urlImage ? (
               <Image
                 source={{ uri: user.complemento.urlImage }}
                 style={styles.image}
@@ -65,7 +66,7 @@ const CustomDrawerContent = () => {
           <View style={styles.line}>
             <Text style={styles.title}>
               {" "}
-              {user.isValidate && user.complemento.nome}
+              {user.isValidate && user.nome}
             </Text>
             <Text style={styles.title}></Text>
           </View>

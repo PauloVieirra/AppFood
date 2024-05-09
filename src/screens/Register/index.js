@@ -119,6 +119,8 @@ const Register = () => {
       }
 
       const storePath = `${user.complemento.cidade}/${user.uid}`;
+      const identify = user.uid;
+      console.log(identify);
 
       // Gravação dos dados do produto no Realtime Database com uma chave única e URL da imagem
       const newProductRef = await firebase
@@ -128,6 +130,7 @@ const Register = () => {
       const productId = newProductRef.key; // Obtém o ID único gerado
       await newProductRef.set({
         id: productId, // Adiciona o ID único ao objeto do produto
+        identify,
         nome,
         price,
         descricao,

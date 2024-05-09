@@ -74,65 +74,51 @@ const PaymentScreen = () => {
 
   const handleUpload = async (cartItems) => {
     try {
-      const uid = user.uid;
-      const pedidoRef = firebase.database().ref(`pedidos/${uid}`).push();
-      const pedidoKey = pedidoRef.key;
-
+      // Recuperar o UID da loja do primeiro item do carrinho (supondo que todos os itens do carrinho tenham o mesmo UID da loja)
+      const storeUid = cartItems[0].identify;
+  
+      // Criar uma referência para o nó da loja onde os pedidos serão armazenados
+      const storePath = `lojas/${user.complemento.cidade}/${storeUid}/pedidos/${user.uid}`;
+  
+      // Criar uma nova referência para o pedido dentro do nó da loja
+      const newOrderRef = firebase.database().ref(storePath).push();
+  
       // Função para gerar um código aleatório de 4 dígitos
       const generateRandomCode = () => {
         const min = 1000; // Menor número de 4 dígitos (1000)
         const max = 9999; // Maior número de 4 dígitos (9999)
         return Math.floor(Math.random() * (max - min + 1)) + min;
       };
-
+  
       // Gerar o código aleatório
       const randomCode = generateRandomCode();
-
+  
       // Verifica se todos os itens do carrinho têm o campo 'uid' definido
-      const allItemsHaveUid = cartItems.every((item) => item.uid !== undefined);
-
+      const allItemsHaveUid = cartItems.every((item) => item.identify !== undefined);
+  
       if (!allItemsHaveUid) {
-        throw new Error(
-          "Todos os itens do carrinho devem ter um UID definido."
-        );
+        throw new Error("Todos os itens do carrinho devem ter um UID definido.");
       }
-
-      await pedidoRef.set({
-        cidade,
-        bairro,
-        lote,
-        numero,
-        condominio,
-        observacao,
-        telefone,
-        selectedOption,
-        typePayment,
-        troco,
-        status,
-        showOptions,
-        pedidoKey, // Adicionando a chave única do pedido
-        codigo: randomCode, // Adiciona o código aleatório ao pedido
-        cart: cartItems, // Adicione os itens do carrinho ao pedido
-      });
-
+  
       // Iterar sobre os itens do carrinho para enviar cada pedido para o nó da loja proprietária
-      for (const item of cartItems) {
-        const { uid: storeId, produtoId: productId } = item;
-        const storePath = `${user.complemento.cidade}/${storeId}/pedidos`;
-        const newOrderRef = await firebase
-          .database()
-          .ref(`lojas/${storePath}`)
-          .push();
-
-        await newOrderRef.set({
-          pedidoKey,
-          productId,
-          status: "Aguardando", // Indicação de status
-          codigo: generateRandomCode(), // Geração de código aleatório
-          ...outrosCamposDoPedido,
-        });
-      }
-
+      const itemsData = cartItems.map((item) => ({
+        productId: item.id,
+        descricao: item.descricao,
+        price: item.price,
+        selectedOption: item.selectedOption,
+        quantity: item.quantity,
+        totalPrice: item.totalPrice,
+        // Adicione outros detalhes do item aqui conforme necessário
+      }));
+  
+      await newOrderRef.set({
+        
+        status: "Aguardando", // Indicação de status
+        codigo: randomCode, // Geração de código aleatório
+        items: itemsData, // Adiciona os detalhes dos itens ao pedido
+        // Outros campos do pedido que você deseja salvar
+      });
+  
       Alert.alert("Sucesso", "Pedido(s) cadastrado(s) com sucesso!");
       // Limpar os dados do formulário
       setCidade("");
@@ -156,6 +142,9 @@ const PaymentScreen = () => {
       );
     }
   };
+  
+  
+  
 
   const progressStepsStyle = {
     activeStepIconBorderColor: "#0a0d64",

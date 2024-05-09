@@ -19,7 +19,7 @@ const ListFruits = () => {
   const [searchBarVisible, setSearchBarVisible] = useState(true);
   const searchBarHeight = useRef(new Animated.Value(50)).current;
  
-   console.log(user.complemento.cidade);
+  
 
    useEffect(() => {
     const fetchProducts = async () => {
@@ -75,7 +75,7 @@ const ListFruits = () => {
         const storePath = `${user.complemento.cidade}/${user.uid}`;
         firebase.database().ref(`lojas/${storePath}/produtos/${category}`).off();
       } else {
-        firebase.database().ref(`lojas`).off();
+        firebase.database().ref(`lojas/aguasclaras`).off();
       }
     };
   }, [user.complemento.cidade, category]);
@@ -195,10 +195,11 @@ const ListFruits = () => {
               uid={item.uid}
               unidade={item.unidade}
               selectedOption={item.selectedOption}
-              
+              identify={item.identify}
+              key={item.id}
             />
           )}
-          keyExtractor={(item) => item.uid}
+          keyExtractor={(item) => item.id}
           onScroll={handleScroll}
         />
       )}

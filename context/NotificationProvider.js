@@ -41,7 +41,7 @@ export const NotificationProvider = ({ children }) => {
 
     const handleShowsCadNotifications = () => {
         setShowCadNotification(!showCadNotification);
-      }
+    };
 
     return (
         <NotificationContext.Provider
