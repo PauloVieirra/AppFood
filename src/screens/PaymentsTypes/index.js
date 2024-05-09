@@ -37,7 +37,7 @@ const PaymentScreen = () => {
   const [nome, setNome] = useState();
   const [contato, setContato] = useState();
   const { user } = useContext(AuthContext);
-  const { cart, updateCartItem } = useCart();
+  const { cart, hendleSaveuidloja } = useCart();
   console.log(cart);
 
   useEffect(() => {
@@ -72,10 +72,15 @@ const PaymentScreen = () => {
     setStep(1);
   };
 
+  const handleStoreUid = (storeUid) => {
+    hendleSaveuidloja(storeUid);
+  }
+
   const handleUpload = async (cartItems) => {
     try {
       // Recuperar o UID da loja do primeiro item do carrinho (supondo que todos os itens do carrinho tenham o mesmo UID da loja)
       const storeUid = cartItems[0].identify;
+      handleStoreUid(storeUid);
   
       // Criar uma referência para o nó da loja onde os pedidos serão armazenados
       const storePath = `lojas/${user.complemento.cidade}/${storeUid}/pedidos/${user.uid}`;

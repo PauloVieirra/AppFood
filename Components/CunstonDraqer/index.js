@@ -16,7 +16,7 @@ import Imageplaceholder from "../../assets/personimg.png";
 const CustomDrawerContent = () => {
   const navigation = useNavigation();
   const { signOut, user, userType } = useContext(AuthContext);
-  console.log(user.complemento.urlImage);
+  
 
   const handleNavigate = (screen) => {
     navigation.navigate(screen);
@@ -66,7 +66,7 @@ const CustomDrawerContent = () => {
           <View style={styles.line}>
             <Text style={styles.title}>
               {" "}
-              {user.isValidate && user.nome}
+              {user.nome}
             </Text>
             <Text style={styles.title}></Text>
           </View>

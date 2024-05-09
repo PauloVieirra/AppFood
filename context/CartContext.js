@@ -7,6 +7,7 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const [uidLoja, setUidLoja] = useState('');
   console.log(cart);
 
   const addToCart = (item) => {
@@ -34,6 +35,10 @@ export const CartProvider = ({ children }) => {
     setCart(cart.filter((item) => item.uid !== itemUid));
   };
 
+  const hendleSaveuidloja = (storeUid) => {
+       setUidLoja(storeUid);
+  };
+
   
   const updateCartItem = (itemId, newQuantity) => {
     setCart(
@@ -45,7 +50,7 @@ export const CartProvider = ({ children }) => {
 
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateCartItem, setCart }}>
+    <CartContext.Provider value={{ cart, uidLoja, addToCart, removeFromCart, updateCartItem, setCart, hendleSaveuidloja }}>
       {children}
     </CartContext.Provider>
   );

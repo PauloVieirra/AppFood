@@ -2,62 +2,87 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from "../../../context/AuthContext";
+import { useCart } from "../../../context/CartContext";
 import firebase from '../../../Servers/FirebaseConect';
 import { useNotification } from '../../../context/NotificationProvider';
 import styles from './style';
 
 export default function PageClientOrder() {
     const { user } = useContext(AuthContext);
+    const { uidLoja } = useCart();
     const { triggerNotification } = useNotification();
     const [orders, setOrders] = useState([]);
-    console.log(user.complemento.nome);
+    const [userCity, setUserCity] = useState('');
+    const [storeUid, setStoreUid] = useState('');
+    const [loading, setLoading] = useState(true); // Adiciona estado para controlar o carregamento
+    const [error, setError] = useState(null); // Adiciona estado para armazenar erros
+    console.log(uidLoja, user.complemento.cidade);
     
-    // No arquivo PageClientOrder.js
-
-// No arquivo PageClientOrder.js
-
-useEffect(() => {
-    const fetchUserOrders = async () => {
-        try {
-            if (user) {
-                const userOrdersRef = firebase.database().ref(`pedidos/${user.uid}`);
-                userOrdersRef.on('value', async (snapshot) => {
-                    if (snapshot.exists()) {
-                        const ordersData = snapshot.val();
-                        const ordersList = Object.values(ordersData);
-
-                        const updatedOrdersList = ordersList.map(order => ({
-                            ...order,
-                            total: order.cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)
-                        }));
-
-                        setOrders(updatedOrdersList);
-
-                        // Verificar e acionar notificações para cada pedido
-                        updatedOrdersList.forEach(order => {
-                            const newStatus = order.status?.trim().toLowerCase();
-                            const newCode = order.codigo; 
-                            if ((newStatus === 'foi aceito' || newStatus === 'saiu para entrega') && newCode) { 
-                                triggerNotification(newStatus, newCode);
-                            }
-                        });
-
-                        await AsyncStorage.setItem('userOrders', JSON.stringify(updatedOrdersList));
-                    }
-                });
+    useEffect(() => {
+        const fetchUserCityAndStoreUid = async () => {
+            try {
+                if (user && uidLoja) {
+                    setUserCity(user.complemento.cidade);
+                    setStoreUid(uidLoja);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar informações do usuário:', error);
+                setError(error); // Define o erro no estado de erro
             }
-        } catch (error) {
-            console.error('Erro ao buscar os pedidos:', error);
-        }
-    };
+        };
 
-    fetchUserOrders();
+        fetchUserCityAndStoreUid();
+    }, [user, uidLoja]);
 
-    return () => {
-        const userOrdersRef = firebase.database().ref(`pedidos/${user.uid}`);
-        userOrdersRef.off();
-    };
-}, [user, triggerNotification]);
+    useEffect(() => {
+        const fetchUserOrders = async () => {
+            try {
+                if (userCity ) {
+                    const userOrdersRef = firebase.database().ref(`lojas/${userCity}/k1MQRLk1UkOzNW5trrvfumWODyG3/pedidos/${user.uid}`);
+
+                    userOrdersRef.on('value', async (snapshot) => {
+                        if (snapshot.exists()) {
+                            const ordersData = snapshot.val();
+                            const ordersList = Object.values(ordersData);
+
+                            const updatedOrdersList = ordersList.map(order => ({
+                                ...order,
+                                total: order.cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)
+                            }));
+
+                            setOrders(updatedOrdersList);
+                            setLoading(false); // Define o carregamento como completo
+                            setError(null); // Limpa o estado de erro
+                            // Verificar e acionar notificações para cada pedido
+                            updatedOrdersList.forEach(order => {
+                                const newStatus = order.status?.trim().toLowerCase();
+                                const newCode = order.codigo;
+                                if ((newStatus === 'foi aceito' || newStatus === 'saiu para entrega') && newCode) {
+                                    triggerNotification(newStatus, newCode);
+                                }
+                            });
+
+                            await AsyncStorage.setItem('userOrders', JSON.stringify(updatedOrdersList));
+                        } else {
+                            // Define um erro personalizado se não houver pedidos encontrados
+                            setError('Nenhum pedido encontrado.');
+                            setLoading(false); // Define o carregamento como completo
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao buscar os pedidos:', error);
+                setError(error); // Define o erro no estado de erro
+            }
+        };
+
+        fetchUserOrders();
+
+        return () => {
+            const userOrdersRef = firebase.database().ref(`pedidos/${user.uid}`);
+            userOrdersRef.off();
+        };
+    }, [userCity, storeUid, triggerNotification]);
 
 
 
@@ -80,6 +105,18 @@ useEffect(() => {
             </>
         );
     };
+
+    if (loading) {
+        return <Text>Carregando...</Text>;
+    }
+
+    if (error) {
+        return <Text>Ocorreu um erro: {error}</Text>;
+    }
+
+    if (orders.length === 0) {
+        return <Text>Nenhum pedido encontrado.</Text>;
+    }
 
     return (
         <View style={styles.container}>
