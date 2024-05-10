@@ -18,6 +18,9 @@ export const AuthProvider = ({ children }) => {
   const [alertcadastro, setAlertCadastro] = useState(false);
   const [alertNoPayments, setAlertNoPayments] = useState(false);
   const [userType, setUserType] =useState(false);
+  const [lat, setLat] =useState("");
+  const [lng, setLng] =useState("");
+
   
   
   useEffect(() => {
@@ -95,11 +98,16 @@ export const AuthProvider = ({ children }) => {
   
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-      setLocation({ latitude, longitude }); // Salvando as coordenadas
-      reverseGeocode(latitude, longitude);
+       setLat(latitude);
+       setLng(longitude);
+      const roundedLatitude = latitude.toFixed(6); // Arredonda para 6 casas decimais
+      const roundedLongitude = longitude.toFixed(6); // Arredonda para 6 casas decimais
+      setLocation({ latitude: roundedLatitude, longitude: roundedLongitude }); // Salvando as coordenadas arredondadas
+      reverseGeocode(roundedLatitude, roundedLongitude);
     } catch (error) {
       console.error('Erro ao obter a localização:', error);
     }
+      
   };
   
   const reverseGeocode = async (latitude, longitude) => {
@@ -108,10 +116,12 @@ export const AuthProvider = ({ children }) => {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
       );
       setAddress(response.data.address);
+      // Agora você pode calcular a distância de outro ponto usando as coordenadas arredondadas (latitude e longitude)
     } catch (error) {
       console.error('Erro ao converter coordenadas em endereço:', error);
     }
   };
+  
 
   const signInWithEmailAndPassword = async (email, password) => {
     try {
@@ -216,7 +226,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
   const signOut = async () => {
     try {
       setLoading(true);
@@ -230,7 +239,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleComplite = async (nome, cidade, bairro, telefone, complemento, imagePro) => {
+  const handleComplite = async (nome, cidade, bairro, telefone, complemento, imagePro,{locationUser}) => {
+    
     try {
       // Verificar se o usuário está logado
       if (!user) {
@@ -246,7 +256,9 @@ export const AuthProvider = ({ children }) => {
         telefone: telefone.trim() || null,
         complemento: complemento.trim() || null,
         urlImage: imagePro || "", 
+        locationUser: locationUser || null,
       };
+      
   
       // Remover propriedades com valor null do objeto
       Object.keys(complementoData).forEach(key => {
@@ -284,14 +296,16 @@ export const AuthProvider = ({ children }) => {
       
       // Redirecionar para a tela de login
       setAlertCadastro(false);
+
       navigation.navigate("Home");
+
     } catch (error) {
       console.error("Erro ao cadastrar:", error);
       Alert.alert("Erro", "Ocorreu um erro. Por favor, tente novamente.");
     }
   };
 
-  const handleCompliteAdm = async (nome, estado,cidade, bairro, rua,numero, cep, imagePro) => {
+  const handleCompliteAdm = async (nome, estado,cidade, bairro, rua,numero, cep, imagePro, {locationUser}) => {
     try {
       // Verificar se o usuário está logado
       if (!user) {
@@ -309,6 +323,7 @@ export const AuthProvider = ({ children }) => {
         numero: numero.trim() || null,
         cep: cep.trim() || null,
         urlImage: imagePro || "",
+        locationUser: locationUser || null,
       };
   
       // Remover propriedades com valor null do objeto
@@ -354,7 +369,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleNewStore = async (nome, estado, cidade, bairro, rua, numero, cep) => {
+  const handleNewStore = async (nome, estado, cidade, bairro, rua, numero, cep, {locationUser}) => {
     try {
       // Verificar se o usuário está logado
       if (!user) {
@@ -372,6 +387,7 @@ export const AuthProvider = ({ children }) => {
         numero: numero.trim() || null,
         cep: cep.trim() || null,
         produtos: {}, // Sub-nó para armazenar os produtos
+        locationUser: locationUser || null
       };
   
       // Remover propriedades com valor null do objeto
@@ -430,6 +446,8 @@ export const AuthProvider = ({ children }) => {
         loading,
         location,
         address,
+        lat,
+        lng,
         alertcadastro,
         handleAlertCadastro,
         alertNoPayments,

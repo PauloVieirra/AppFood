@@ -10,7 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from '@expo/vector-icons';
 
 const ListFruits = () => {
-  const { user } = useContext(AuthContext);
+  const { user, lat, lng } = useContext(AuthContext);
   const [fruits, setFruits] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -34,31 +34,23 @@ const ListFruits = () => {
           setLoading(false);
           return;
         }
+        let closestStoreProducts = [];
+        let closestDistance = Infinity;
         databaseRef.on("value", (snapshot) => {
-          const productsData = snapshot.val();
-          if (productsData) {
-            let allProducts = [];
-            if (Array.isArray(productsData)) {
-              productsData.forEach((store) => {
-                if (store.produtos && store.produtos[category]) {
-                  const storeProducts = Object.values(store.produtos[category]);
-                  allProducts = [...allProducts, ...storeProducts];
-                }
-              });
-            } else {
-              Object.entries(productsData).forEach(([storeUid, store]) => {
-                if (store.produtos && store.produtos[category]) {
-                  const storeProducts = Object.values(store.produtos[category]);
-                  allProducts = [...allProducts, ...storeProducts];
-                }
-              });
+          snapshot.forEach((childSnapshot) => {
+            const store = childSnapshot.val();
+            const { locationUser, produtos } = store;
+            if (produtos && produtos[category]) {
+              const storeProducts = Object.values(produtos[category]);
+              const distance = calculateDistance(lat, lng, locationUser.lat, locationUser.lng);
+              if (distance < closestDistance) {
+                closestDistance = distance;
+                closestStoreProducts = storeProducts;
+              }
             }
-            setFruits(allProducts);
-            AsyncStorage.setItem("products", JSON.stringify(allProducts));
-          } else {
-            setFruits([]);
-            AsyncStorage.setItem("products", JSON.stringify([]));
-          }
+          });
+          setFruits(closestStoreProducts);
+          AsyncStorage.setItem("products", JSON.stringify(closestStoreProducts));
           setLoading(false);
         });
       } catch (error) {
@@ -71,11 +63,28 @@ const ListFruits = () => {
   
     return () => {
       if (user.complemento && user.complemento.cidade) {
-        const storePath = `${user.complemento.cidade}/${user.uid}`;
-        firebase.database().ref(`lojas/${storePath}/produtos/${category}`).off();
+        const storePath = `${user.complemento.cidade}`;
+        firebase.database().ref(`lojas/${storePath}`).off();
       }
     };
-  }, [user.complemento?.cidade, category]);
+  }, [user.complemento?.cidade, category, lat, lng]);
+
+  // Função para calcular a distância entre duas coordenadas
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Raio da Terra em km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distância em km
+    return distance;
+  };
+
+  const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+  };
 
   const handleManualUpdate = async () => {
     setLoading(true);
@@ -126,11 +135,20 @@ const ListFruits = () => {
   return (
     <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
       {secondList ? (
-        <View>
-          <Text>Segunda tela</Text>
+         <View style={{flex:1}}>
+          <View>
+            
+            <Text>E uma satisfacao indescritivel te ter por aqui,</Text>
+            <Text>nossa busca e baseada na sua localizacao, por isso precisamos de alguns dados,</Text>
+            <Text>para te oferecer uma experiencia eficiente.,</Text>
+          </View>
+          <TouchableOpacity>
+             <Text>Completar Cadastro</Text>
+          </TouchableOpacity>
+         
         </View>
       ) : (
-        <View>
+        <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
           <View style={globalStyles.menu_list}>
             <TouchableOpacity style={[globalStyles.btn_list, activeCategory === 'frutas' ? globalStyles.activeBtn : null]} 
               onPress={() => {

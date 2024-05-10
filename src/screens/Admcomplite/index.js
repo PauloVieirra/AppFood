@@ -21,7 +21,7 @@ import styles from "./style";
 
 const ProfileAdm = () => {
   const navigation = useNavigation();
-  const { handleCompliteAdm, user } = useContext(AuthContext);
+  const { handleCompliteAdm, user, lat, lng } = useContext(AuthContext);
   const [nome, setNome] = useState("");
   const [estado, setEstatdo] = useState("");
   const [cidade, setCidade] = useState("");
@@ -31,6 +31,9 @@ const ProfileAdm = () => {
   const [cep, setCep] = useState("");
   const [imagePro, setImagePro] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [urlImage, setUrlImage] = useState(null);
+
+  const locationUser = {lat, lng}
 
   const cidadesSatelites = [
     { id: 25, label: "Águas Claras", value: "aguasclaras" },
@@ -137,7 +140,7 @@ const ProfileAdm = () => {
   };
 
   const handleRegister = () => {
-    handleCompliteAdm(nome, estado,cidade,bairro,rua,numero,cep,imagePro );
+    handleCompliteAdm(nome, estado,cidade,bairro,rua,numero,cep,imagePro, {locationUser} );
   };
   
   

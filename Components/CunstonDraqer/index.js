@@ -125,6 +125,7 @@ const CustomDrawerContent = () => {
           </TouchableOpacity>
         )}
       </ScrollView>
+      
       <View style={{ height:56, justifyContent:'center', alignItems:'center'}}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleOut}>
           <Text style={styles.logoutText}>Sair</Text>

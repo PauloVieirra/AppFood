@@ -9,7 +9,7 @@ import MenuTop from "../../../Components/TopBar";
 import { ModalComplite } from "../../../Components/Modals";
 import ListFruits from "../../../Components/List";
 
-export default function Home() {
+export default function Home () {
     const navigation = useNavigation();
     const { user, alertcadastro, loading } = useContext(AuthContext);
     const { triggerNotification, controler } = useNotification();
@@ -17,20 +17,10 @@ export default function Home() {
     const [orders, setOrders] = useState([]);
 
    
-
-
-
-   
-
-
-
     return (
         <View style={styles.container}>
-            <MenuTop />
-            {user.tipo !== 'ADM' && user.tipo !== 'AGT' &&  <ListFruits tipo="frutas" />}
+            {!user.tipo && <ListFruits tipo="frutas" />}
             {alertcadastro && <ModalComplite />}
-
-
         </View>
     );
 }

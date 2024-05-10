@@ -116,7 +116,7 @@ const Card = ({ image, nome, descricao, id, price ,uid, curtadescricao, unidade,
                   onPress={handlePressAdd}
                 >
                   <Text style={{ fontWeight: "500", color: "#454545" }}>
-                    {user.tipo === "ADM" ? "Editar" : "Add Carrinho"}
+                    {user.tipo === "ADM" ? "Editar" : "Adicionar"}
                   </Text>
                 </TouchableOpacity>
               </View>

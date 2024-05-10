@@ -20,13 +20,18 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
+  const handleGoHome = () => {
+    navigation.navigate("Home");
+  }
+
+  
   const handleSignUp = async () => {
     try {
       setLoading(true);
       // Verifica se é um administrador ou não e define o tipo adequadamente
       const userRole = tipo === "ADM" ? "ADM" : "";
       await signUpWithEmailAndPassword(email, password, userRole, nome ,isValidate);
-      navigation.navigate("Home");
+      handleGoHome();
     } catch (error) {
       console.error("Erro ao criar a conta:", error.message); // Exibe o erro completo no console
       Alert.alert(

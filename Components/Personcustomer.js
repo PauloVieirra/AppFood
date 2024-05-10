@@ -10,7 +10,7 @@ export default Userinfo = () => {
   return (
     <View style={styles.constainer}>
     
-        {user.isValidate &&  user.complemento.urlImage ?  (
+        {user.isValidate   ?  (
           <Image
             source={{ uri: user.complemento.urlImage }}
             style={styles.userimg}

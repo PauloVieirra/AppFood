@@ -9,7 +9,7 @@ import styles from "./style";
 
 const CadNewStore = () => {
   const navigation = useNavigation();
-  const { handleNewStore, user } = useContext(AuthContext);
+  const { handleNewStore, lat, lng } = useContext(AuthContext);
   const [nome, setNome] = useState("");
   const [estado, setEstatdo] = useState("");
   const [cidade, setCidade] = useState("");
@@ -18,6 +18,8 @@ const CadNewStore = () => {
   const [numero, setNumero] = useState(null);
   const [cep, setCep] = useState("");
   const [uploading, setUploading] = useState(false);
+
+  const locationUser = {lat, lng}
 
   const cidadesSatelites = [
     { id: 25, label: "Águas Claras", value: "aguasclaras" },
@@ -49,7 +51,7 @@ const CadNewStore = () => {
   
 
   const handleRegister = () => {
-    handleNewStore(nome, estado, cidade, bairro, rua, numero, cep);
+    handleNewStore(nome, estado, cidade, bairro, rua, numero, cep, {locationUser});
   };
 
   return (

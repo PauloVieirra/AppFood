@@ -21,7 +21,7 @@ import styles from "./style";
 
 const ProfileCad = () => {
   const navigation = useNavigation();
-  const { handleComplite, user } = useContext(AuthContext);
+  const { handleComplite, user, lat, lng } = useContext(AuthContext);
   const [nome, setNome] = useState("");
   const [cidade, setCidade] = useState("");
   const [bairro, setBairro] = useState("");
@@ -30,6 +30,8 @@ const ProfileCad = () => {
   const [imagePro, setImagePro] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [urlImage, setUrlImage] = useState(null);
+
+  const locationUser = {lat, lng}
 
   const cidadesSatelites = [
     { id: 25, label: "Águas Claras", value: "aguasclaras" },
@@ -134,7 +136,7 @@ const ProfileCad = () => {
   };
 
   const handleRegister = () => {
-    handleComplite(nome, cidade, bairro, telefone, complemento, imagePro);
+    handleComplite(nome, cidade, bairro, telefone, complemento, imagePro, {locationUser});
   };
 
   return (

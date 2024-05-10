@@ -9,7 +9,7 @@ import { useCart } from "../context/CartContext";
 
 const MenuTop = () => {
   const navigation = useNavigation();
-  const { address } = useContext(AuthContext);
+  const { user,address } = useContext(AuthContext);
   console.log(address);
   const toggleDrawer = () => {
     navigation.toggleDrawer();
@@ -24,7 +24,7 @@ const MenuTop = () => {
           <Text>
             {address.city},{" "}{address.road}
           </Text>
-        )}
+      )}
       <Personcustomer/>
     </View>
   );

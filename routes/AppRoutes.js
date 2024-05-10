@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext} from "react";
 import { View, Text } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -9,13 +9,17 @@ import PaymentScreen from "../src/screens/PaymentsTypes";
 import Promo from "../src/screens/Promo";
 import Cart from "../src/screens/Cart";
 import Card from "../Components/Cards";
+import MenuTop from "../Components/TopBar";
 import TabBar from "../Components/Tab";
 import { Complite } from "../Components/Comunications/Orientacoes";
 import ProfileCad from "../src/screens/Complite";
 import { CartProvider } from "../context/CartContext";
+
 import CustomDrawerContent from "../Components/CunstonDraqer";
 import { EntregaOn, PedidoOn } from "../Components/Comunications/Orientacoes";
 import { useNotification } from "../context/NotificationProvider";
+import AuthContext from "../context/AuthContext";
+
 
 const AppStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -48,10 +52,14 @@ function AppRoutes() {
 
 function StackNavigator() {
   const { loadingDelivery, lastNotifiedStatus, clearNotification } = useNotification();
+  const {user} = useContext(AuthContext);
   
   return (
     <View style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 100, bottom: 0, left: 0, backgroundColor: "#fff",}}>
-      <AppStack.Navigator> 
+        {user.isValidate && 
+         <MenuTop/>
+        }
+        <AppStack.Navigator> 
         <AppStack.Screen
           name="Home"
           component={Home}
@@ -115,8 +123,10 @@ function StackNavigator() {
       {loadingDelivery && lastNotifiedStatus.some(item => item.status === "aceito") && <PedidoOn/>}
       {loadingDelivery && lastNotifiedStatus.some(item => item.status === "entrega") && <EntregaOn/>}
 
-      
+      {user.isValidate && 
       <TabBar/>
+      }
+      
     </View>
   );
 }
