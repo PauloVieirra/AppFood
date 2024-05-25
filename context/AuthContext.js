@@ -14,14 +14,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [alertcadastro, setAlertCadastro] = useState(false);
   const [alertNoPayments, setAlertNoPayments] = useState(false);
   const [userType, setUserType] =useState(false);
   const [lat, setLat] =useState("");
   const [lng, setLng] =useState("");
-
   
+
   
   useEffect(() => {
     const checkUserLoggedIn = async () => {
@@ -39,50 +39,58 @@ export const AuthProvider = ({ children }) => {
   
     checkUserLoggedIn();
   
-    const unsubscribe = firebase
-      .auth()
-      .onAuthStateChanged(async (firebaseUser) => {
-        if (firebaseUser) {
-          try {
-            // Busca os detalhes do usuário no banco de dados em tempo real
-            const userRef = firebase
-              .database()
-              .ref(`users/${firebaseUser.uid}`);
-            userRef.once("value", async (snapshot) => {
-              const userData = snapshot.val();
-              if (userData) {
-                // Busca os detalhes adicionais no nó "complemento"
-                const complementRef = firebase
-                  .database()
-                  .ref(`complement/${firebaseUser.uid}`);
-                complementRef.once("value", (complementSnapshot) => {
-                  const complementData = complementSnapshot.val();
-                  setUser({
-                    ...userData,
-                    complement: complementData // Adiciona os dados do complemento ao usuário
-                  });
-                  // Salva os dados do usuário incluindo os do complemento no AsyncStorage
-                  AsyncStorage.setItem(
-                    "Auth_user",
-                    JSON.stringify({
-                      ...userData,
-                      complement: complementData
-                    })
-                  );
+    const unsubscribe = firebase.auth().onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          // Busca os detalhes do usuário no banco de dados em tempo real
+          const userRef = firebase.database().ref(`users/${firebaseUser.uid}`);
+          userRef.once("value", async (snapshot) => {
+            const userData = snapshot.val();
+            if (userData) {
+              // Busca os detalhes adicionais no nó "complemento"
+              const complementRef = firebase.database().ref(`complement/${firebaseUser.uid}`);
+              complementRef.once("value", (complementSnapshot) => {
+                const complementData = complementSnapshot.val();
+                setUser({
+                  ...userData,
+                  complement: complementData // Adiciona os dados do complemento ao usuário
                 });
-              }
-            });
-          } catch (error) {
-            console.error("Error retrieving user data:", error);
-          }
-        } else {
-          setUser(null);
+                // Salva os dados do usuário incluindo os do complemento no AsyncStorage
+                AsyncStorage.setItem(
+                  "Auth_user",
+                  JSON.stringify({
+                    ...userData,
+                    complement: complementData
+                  })
+                );
+                if (!complementData || !complementData.cidade) {
+                  // Forçar atualização se a cidade não estiver disponível
+                  updateAddress();
+                }
+              });
+            }
+          });
+        } catch (error) {
+          console.error("Error retrieving user data:", error);
         }
-      });
+      } else {
+        setUser(null);
+      }
+    });
   
     // Cleanup function to unsubscribe from the listener
     return () => unsubscribe();
   }, []);
+  
+
+  const updateAddress = async () => {
+    try {
+      await getLocation();
+    } catch (error) {
+      console.error('Erro ao atualizar o endereço:', error);
+    }
+  };
+  
   
   useEffect(() =>{
     getLocation();
@@ -98,8 +106,8 @@ export const AuthProvider = ({ children }) => {
   
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-       setLat(latitude);
-       setLng(longitude);
+      setLat(latitude);
+      setLng(longitude);
       const roundedLatitude = latitude.toFixed(6); // Arredonda para 6 casas decimais
       const roundedLongitude = longitude.toFixed(6); // Arredonda para 6 casas decimais
       setLocation({ latitude: roundedLatitude, longitude: roundedLongitude }); // Salvando as coordenadas arredondadas
@@ -107,7 +115,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Erro ao obter a localização:', error);
     }
-      
   };
   
   const reverseGeocode = async (latitude, longitude) => {
@@ -116,6 +123,11 @@ export const AuthProvider = ({ children }) => {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
       );
       setAddress(response.data.address);
+      if (user) {
+        const updatedUser = { ...user, complemento: { ...user.complemento, cidade: response.data.address.city } };
+        setUser(updatedUser);
+        AsyncStorage.setItem("Auth_user", JSON.stringify(updatedUser)); // Atualiza o AsyncStorage com a cidade
+      }
       // Agora você pode calcular a distância de outro ponto usando as coordenadas arredondadas (latitude e longitude)
     } catch (error) {
       console.error('Erro ao converter coordenadas em endereço:', error);
@@ -125,12 +137,12 @@ export const AuthProvider = ({ children }) => {
 
   const signInWithEmailAndPassword = async (email, password) => {
     try {
-      setLoading(true);
+       setLoading(true); 
       const userCredential = await firebase
         .auth()
         .signInWithEmailAndPassword(email, password);
       const { user } = userCredential;
-
+      
       // Busca os detalhes do usuário no banco de dados em tempo real
       const userRef = firebase.database().ref(`users/${user.uid}`);
       userRef.once("value", (snapshot) => {
@@ -142,16 +154,24 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Sign in error:", error);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   };
+
+  const handleLoading = () => {
+    setLoading(prevLoading => !prevLoading);
+  };
+  
 
   const signUpWithEmailAndPassword = async (
     email,
     password,
     tipo,
     nome,
-    isValidate
+    isValidate,
+    cidade
   ) => {
     try {
       const userCredential = await firebase
@@ -168,7 +188,9 @@ export const AuthProvider = ({ children }) => {
           uid: user.uid,
           tipo: tipo,
           nome: nome,
-          isValidate: isValidate, // Defina o tipo do usuário no banco de dados
+          isValidate: isValidate,
+          cidade: cidade
+          // Defina o tipo do usuário no banco de dados
           // Adicione outros campos necessários, se houver
         });
         if (tipo === "ADM") {
@@ -250,11 +272,11 @@ export const AuthProvider = ({ children }) => {
       
       // Criar um objeto para armazenar os dados complementares
       const complementoData = {
-        nome: nome.trim() || null,
-        cidade: cidade.trim() || null,
-        bairro: bairro.trim() || null,
-        telefone: telefone.trim() || null,
-        complemento: complemento.trim() || null,
+        nome: nome || "",
+        cidade: cidade || "",
+        bairro: bairro || "",
+        telefone: telefone || "",
+        complemento: complemento || "",
         urlImage: imagePro || "", 
         locationUser: locationUser || null,
       };
@@ -399,12 +421,18 @@ export const AuthProvider = ({ children }) => {
   
       // Concatenar cidade e uid para definir o caminho da loja
       const storePath = `${user.complemento.cidade}/${user.uid}`;
-      console.log(storePath);
+      
       // Gravação dos dados da loja no Realtime Database 
       await firebase
         .database()
         .ref(`lojas/${storePath}`)
         .set(lojaData);
+  
+      // Atualizar a informação do usuário para indicar que ele possui uma loja cadastrada
+      await firebase
+        .database()
+        .ref(`users/${user.uid}`)
+        .update({ isStore: true });
   
       setLoading(false);
       
@@ -418,6 +446,7 @@ export const AuthProvider = ({ children }) => {
       Alert.alert("Erro", "Ocorreu um erro ao criar a loja. Por favor, tente novamente.");
     }
   };
+  
   
   const handleAlertCadastro = () => {
     if (!alertcadastro) {
@@ -449,6 +478,7 @@ export const AuthProvider = ({ children }) => {
         lat,
         lng,
         alertcadastro,
+        handleLoading,
         handleAlertCadastro,
         alertNoPayments,
         handleAlertNoPayment,

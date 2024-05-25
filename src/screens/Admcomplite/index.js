@@ -36,8 +36,8 @@ const ProfileAdm = () => {
   const locationUser = {lat, lng}
 
   const cidadesSatelites = [
-    { id: 25, label: "Águas Claras", value: "aguasclaras" },
-    { id: 1, label: "Brasília", value: "brasilia" },
+    { id: 25, label: "Águas Claras", value: "Águas Claras" },
+    { id: 1, label: "Brasília", value: "Brasília" },
     { id: 2, label: "Brazlândia", value: "brazlandia" },
     { id: 3, label: "Candangolândia", value: "candangolandia" },
     { id: 4, label: "Ceilândia", value: "ceilandia" },

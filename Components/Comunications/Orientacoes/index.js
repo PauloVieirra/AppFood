@@ -173,6 +173,68 @@ const PedidoOn = () => {
   );
 };
 
+const UpdateAdm = () => {
+  const { clearNotification } = useNotification();
+  const [soundPlayed, setSoundPlayed] = useState(false);
+
+    // Configura o PanResponder para detectar gestos de arrastar
+    const panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (evt, gestureState) => {
+        // Se o gesto for para cima, fecha a notificação
+        if (gestureState.dy < -50) {
+          closeNotify();
+        }
+      },
+    });
+
+  useEffect(() => {
+    if (!soundPlayed) {
+      // Reproduzir áudio apenas se ainda não foi reproduzido
+      playNotificationSound();
+      setSoundPlayed(true);
+    }
+  }, [soundPlayed]);
+
+  const playNotificationSound = async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../Sounds/notifications/pedido.mp3')
+      );
+      await sound.playAsync();
+    } catch (error) {
+      console.error('Erro ao reproduzir som de notificação:', error);
+    }
+  };
+
+  const closeNotify = () => {
+    setSoundPlayed(false); // Zerar a contagem quando o botão de fechar for clicado
+    clearNotification();
+  };
+
+  return (
+    <View style={styles.container} {...panResponder.panHandlers}>
+      <View style={styles.cont_into}>
+        <View style={styles.cont_top}>
+          <TouchableOpacity style={styles.btn_close} onPress={closeNotify}>
+            <AntDesign name="closecircleo" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.cont_body}>
+           <Image source={require('../../../assets/acc.gif')} style={styles.gifacc}/>
+          <View>
+          <Text style={styles.notify_title}>OrSheep - UPDATE</Text>
+          <Text style={styles.notify_text}>
+            Atualizar seus dados.....
+          </Text>
+          </View>
+          
+        </View>
+      </View>
+    </View>
+  );
+};
+
   const PagamentoInfo = () => { 
     const navigation = useNavigation();
     const { handleAlertNoPayment  } = useContext(AuthContext);
@@ -302,6 +364,6 @@ const CadOn = () => {
 
 
 
-export {Complite, EntregaOn, PedidoOn,PagamentoInfo, CadOn};
+export {Complite, EntregaOn, PedidoOn,PagamentoInfo, CadOn, UpdateAdm};
 
 

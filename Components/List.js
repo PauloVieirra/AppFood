@@ -10,7 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from '@expo/vector-icons';
 
 const ListFruits = () => {
-  const { user, lat, lng } = useContext(AuthContext);
+  const { user, lat, lng, address, forceUpdate } = useContext(AuthContext); // Adiciona forceUpdate ao contexto
   const [fruits, setFruits] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -19,21 +19,23 @@ const ListFruits = () => {
   const [activeCategory, setActiveCategory] = useState('frutas');
   const [searchBarVisible, setSearchBarVisible] = useState(true);
   const searchBarHeight = useRef(new Animated.Value(50)).current;
-
+ 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
         let databaseRef;
-        if (user.complemento && user.complemento.cidade) {
-          const storePath = `${user.complemento.cidade}`;
+        if (user && user.cidade || user.complemento.cidade) {
+          const storePath = `${address.city}`;
           databaseRef = firebase.database().ref(`lojas/${storePath}`);
         } else {
-          // Se o usuário não tiver a informação da cidade, mostrar a segunda tela
+          // Se o usuário não tiver a informação da cidade, mostrar a segunda tela e chamar a função de atualização do contexto
           setSecondList(true);
+          forceUpdate(); // Chama a função de atualização do contexto
           setLoading(false);
           return;
         }
+  
         let closestStoreProducts = [];
         let closestDistance = Infinity;
         databaseRef.on("value", (snapshot) => {
@@ -62,14 +64,14 @@ const ListFruits = () => {
     fetchProducts();
   
     return () => {
-      if (user.complemento && user.complemento.cidade) {
-        const storePath = `${user.complemento.cidade}`;
+      if (address && address.city) {
+        const storePath = `${address.city}`;
         firebase.database().ref(`lojas/${storePath}`).off();
       }
     };
-  }, [user.complemento?.cidade, category, lat, lng]);
+  }, [address, category, lat, lng, forceUpdate]);
+  
 
-  // Função para calcular a distância entre duas coordenadas
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; // Raio da Terra em km
     const dLat = deg2rad(lat2 - lat1);
@@ -137,15 +139,13 @@ const ListFruits = () => {
       {secondList ? (
          <View style={{flex:1}}>
           <View>
-            
-            <Text>E uma satisfacao indescritivel te ter por aqui,</Text>
-            <Text>nossa busca e baseada na sua localizacao, por isso precisamos de alguns dados,</Text>
-            <Text>para te oferecer uma experiencia eficiente.,</Text>
+            <Text>E uma satisfação indescritível te ter por aqui,</Text>
+            <Text>nossa busca é baseada na sua localização, por isso precisamos de alguns dados,</Text>
+            <Text>para te oferecer uma experiência eficiente.,</Text>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={forceUpdate}>
              <Text>Completar Cadastro</Text>
           </TouchableOpacity>
-         
         </View>
       ) : (
         <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
@@ -158,12 +158,12 @@ const ListFruits = () => {
               <Text style={[globalStyles.text_list, activeCategory === 'frutas' ? globalStyles.text_active : null]}>Frutas</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity  style={[globalStyles.btn_list, activeCategory === 'legumes' ? globalStyles.activeBtn : null]} 
+            <TouchableOpacity style={[globalStyles.btn_list, activeCategory === 'legumes' ? globalStyles.activeBtn : null]} 
               onPress={() => {
                 setCategory('legumes');
                 setActiveCategory('legumes');
               }}>
-              <Text style={[globalStyles.text_list, activeCategory === 'legumes' ? globalStyles.text_active : null]} >Legumes</Text>
+              <Text style={[globalStyles.text_list, activeCategory === 'legumes' ? globalStyles.text_active : null]}>Legumes</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={[globalStyles.btn_list, activeCategory === 'verduras' ? globalStyles.activeBtn : null]} 
@@ -187,7 +187,7 @@ const ListFruits = () => {
           </Animated.View>
 
           {loading ? (
-            <BuscandoProdutos/>
+            <BuscandoProdutos />
           ) : (
             <FlatList
               data={filteredFruits}

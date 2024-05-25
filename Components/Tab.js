@@ -11,7 +11,6 @@ const TabBar = () => {
   const handleNavigateTo = (screen) => {
     navigation.navigate(screen); 
     setActiveTab(screen); 
-   
   };
 
   return (

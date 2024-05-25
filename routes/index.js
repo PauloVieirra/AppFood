@@ -7,8 +7,10 @@ import AuthContext from "../context/AuthContext";
 import { BemVindo } from "../Components/Comunications/Loadings";
 
 function Routes() {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, handleLoading } = useContext(AuthContext);
   console.disableYellowBox = true;
+
+  
 
   if (loading) {
     return (
@@ -23,15 +25,18 @@ function Routes() {
 
   // Verifica se o usuário é do tipo ADM
   if (user.tipo === "ADM") {
-    return <AdmRoutes />;
+     
+      return <AdmRoutes />; 
   }
+
    // Verifica se o usuário é do tipo ADM
    if (user.tipo === "AGT") {
-    return <AgenteRoutes />;
+     
+      return <AgenteRoutes />;
   }
 
   // Se não for ADM, renderiza as rotas de usuário normal
-  return  <AppRoutes />;
+     return  <AppRoutes />;
 }
 
 export default Routes;

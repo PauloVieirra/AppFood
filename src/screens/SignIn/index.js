@@ -24,6 +24,7 @@ export default function Signin() {
   const handleSignIn = () => {
     signInWithEmailAndPassword(email, password);
   };
+  
   const handleFocus = () => {
     setIsFocusedicon(true);
   };
@@ -83,8 +84,8 @@ export default function Signin() {
       </View>
       
       <View style={globalStyles.line_btn}>
-        <TouchableOpacity style={globalStyles.primary_button}>
-          <Text style={globalStyles.text_button} onPress={handleSignIn}>
+        <TouchableOpacity style={globalStyles.primary_button} onPress={handleSignIn}>
+          <Text style={globalStyles.text_button} >
             ENTRAR
           </Text>
         </TouchableOpacity>

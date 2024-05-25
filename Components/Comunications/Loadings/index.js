@@ -5,9 +5,9 @@ import styles from './style';
 const BemVindo = () => {
     return (
         <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Definindo parametros...</Text>
-    </View>
+        <ActivityIndicator size="large" color="#131313" />
+        <Text>Entrando...</Text>
+        </View>
     );
 }
 

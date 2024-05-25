@@ -10,7 +10,6 @@ import { useCart } from "../context/CartContext";
 const MenuTop = () => {
   const navigation = useNavigation();
   const { user,address } = useContext(AuthContext);
-  console.log(address);
   const toggleDrawer = () => {
     navigation.toggleDrawer();
   };

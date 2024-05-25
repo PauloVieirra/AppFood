@@ -9,7 +9,7 @@ import Checkbox from "../../../Components/Checkbox";
 export default function SignUp() {
   const navigation = useNavigation();
   const [isFocused, setIsFocused] = useState(false);
-  const { signUpWithEmailAndPassword } = useContext(AuthContext);
+  const { signUpWithEmailAndPassword, address } = useContext(AuthContext);
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +19,9 @@ export default function SignUp() {
   const [errorEmail, setErrorEmail] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const cidade = address.city;
+  
+ 
 
   const handleGoHome = () => {
     navigation.navigate("Home");
@@ -30,7 +33,7 @@ export default function SignUp() {
       setLoading(true);
       // Verifica se é um administrador ou não e define o tipo adequadamente
       const userRole = tipo === "ADM" ? "ADM" : "";
-      await signUpWithEmailAndPassword(email, password, userRole, nome ,isValidate);
+      await signUpWithEmailAndPassword(email, password, userRole, nome ,isValidate, cidade);
       handleGoHome();
     } catch (error) {
       console.error("Erro ao criar a conta:", error.message); // Exibe o erro completo no console

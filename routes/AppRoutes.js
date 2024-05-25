@@ -51,14 +51,22 @@ function AppRoutes() {
 }
 
 function StackNavigator() {
-  const { loadingDelivery, lastNotifiedStatus, clearNotification } = useNotification();
+  const { loadingDelivery, lastNotifiedStatus, clearNotification,handleShowsCadNotifications } = useNotification();
   const {user} = useContext(AuthContext);
+
+
+  const notifyUpdataAdm = () => {
+    if(!user.isValidate && user.type === 'ADM'  ){
+      handleShowsCadNotifications();
+    }
+  }
+
   
   return (
     <View style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 100, bottom: 0, left: 0, backgroundColor: "#fff",}}>
-        {user.isValidate && 
+      
          <MenuTop/>
-        }
+        
         <AppStack.Navigator> 
         <AppStack.Screen
           name="Home"
@@ -123,9 +131,9 @@ function StackNavigator() {
       {loadingDelivery && lastNotifiedStatus.some(item => item.status === "aceito") && <PedidoOn/>}
       {loadingDelivery && lastNotifiedStatus.some(item => item.status === "entrega") && <EntregaOn/>}
 
-      {user.isValidate && 
+     
       <TabBar/>
-      }
+      
       
     </View>
   );

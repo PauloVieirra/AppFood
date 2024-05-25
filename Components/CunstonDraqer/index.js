@@ -91,31 +91,34 @@ const CustomDrawerContent = () => {
               <Text style={styles.drawerItem}>Atualizar dados</Text>
             </TouchableOpacity>
          }
-         
-
-        {user.tipo === "ADM" && (
-          <>
-            <TouchableOpacity
-              style={styles.btnsmenu}
-              onPress={() => handleNavigate("Register")}
-            >
-              <Text style={styles.drawerItem}>Cadastar produtos</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.btnsmenu}
-              onPress={() => handleNavigate("ProfileAdm")}
-            >
-              <Text style={styles.drawerItem}>Atualizar dados</Text>
-            </TouchableOpacity>
+  
+        {user.tipo === "ADM" && user.isValidate && !user.isStore && (
             <TouchableOpacity
               style={styles.btnsmenu}
               onPress={() => handleNavigate("CadNewStore")}
             >
               <Text style={styles.drawerItem}>Criar Loja</Text>
             </TouchableOpacity>
-          </>
+       
         )}
+        {user.tipo === "ADM" && user.isValidate && user.isStore && (
+        
+            <TouchableOpacity
+              style={styles.btnsmenu}
+              onPress={() => handleNavigate("Register")}
+            >
+              <Text style={styles.drawerItem}>Cadastar produtos</Text>
+            </TouchableOpacity>
+        )}
+        {user.tipo === "ADM" && (
+            <TouchableOpacity
+              style={styles.btnsmenu}
+              onPress={() => handleNavigate("ProfileAdm")}
+            >
+              <Text style={styles.drawerItem}>Atualizar dados</Text>
+            </TouchableOpacity>
+              )}
+      
         {user.tipo === "AGT" && (
           <TouchableOpacity
             style={styles.btnsmenu}
